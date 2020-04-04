@@ -447,8 +447,8 @@ filmsListExtraElements.forEach((item, i) => {
   }
 });
 
-const siteFooterElements = filmsElement.querySelector(`footer`);
-const footerStatisticsElement = siteFooterElements.querySelector(`.footer__statistics`);
+const siteFooterElement = document.querySelector(`.footer`);
+const footerStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
 
 render(footerStatisticsElement, Object(_components_films_count_js__WEBPACK_IMPORTED_MODULE_10__["createFilmsCountTemplate"])(), `beforeend`);
 
