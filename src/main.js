@@ -13,7 +13,6 @@ import {generateFilms} from "./mock/film.js";
 import {generateFilters} from "./mock/filter.js";
 import {sortFilmTitles} from "./mock/sortFilm.js";
 import {getUserRank} from "./mock/profile.js";
-// import {generateExtraFilmCard} from "./mock/extra-films.js";
 import {render} from "./utils.js";
 
 const EXTRA_CARD_COUNT = 2;
@@ -38,9 +37,6 @@ render(siteMainElement, createFilmsContainerTemplate(), `beforeend`);
 const filmsElement = siteMainElement.querySelector(`.films`);
 const filmsListElement = filmsElement.querySelector(`.films-list`);
 const filmsListContainerElement = filmsListElement.querySelector(`.films-list__container`);
-
-// films.slice(0, CARD_COUNT).forEach((film) => render(filmsListContainerElement, createFilmCardTemplate(film), `beforeend`));
-// films.forEach((film) => render(siteMainElement, createFilmDetailsTemplate(film), `beforeend`));
 
 render(filmsListElement, createShowMoreButtonTemplate(), `beforeend`);
 render(filmsElement, createExtraFilmListTemplate(), `beforeend`);
@@ -80,18 +76,51 @@ showMoreButton.addEventListener(`click`, () => {
   films.slice(prevTasksCount, showingTasksCount)
     .forEach((film) => render(filmsListContainerElement, createFilmCardTemplate(film), `beforeend`));
 
+  showFilmDetails();
+
   if (showingTasksCount >= films.length) {
     showMoreButton.remove();
   }
 });
 
 const bodyElement = document.querySelector(`body`);
-render(bodyElement, createFilmDetailsTemplate(films[0]), `beforeend`);
 
-const filmDetailsPopup = bodyElement.querySelector(`.film-details`);
-const closePopupButton = filmDetailsPopup.querySelector(`.film-details__close-btn`);
+const renderCardFilmDetails = (i) => {
+  render(bodyElement, createFilmDetailsTemplate(films[i]), `beforeend`);
+};
 
-closePopupButton.addEventListener(`click`, () => {
-  filmDetailsPopup.style.display = `none`;
-});
+const closePopupElement = () => {
+  const filmDetailsPopup = bodyElement.querySelector(`.film-details`);
+  const closePopupButton = filmDetailsPopup.querySelector(`.film-details__close-btn`);
 
+  closePopupButton.addEventListener(`click`, () => {
+    bodyElement.removeChild(filmDetailsPopup);
+  });
+};
+
+const showFilmDetails = () => {
+  const filmCardElements = document.querySelectorAll(`.film-card`);
+
+  filmCardElements.forEach((card, i) => {
+    const posterFilmElement = card.querySelector(`.film-card__poster`);
+    const titleFilmElement = card.querySelector(`.film-card__title`);
+    const commentsFilmElement = card.querySelector(`.film-card__comments`);
+
+    posterFilmElement.addEventListener(`click`, () => {
+      renderCardFilmDetails(i);
+      closePopupElement();
+    });
+
+    titleFilmElement.addEventListener(`click`, () => {
+      renderCardFilmDetails(i);
+      closePopupElement();
+    });
+
+    commentsFilmElement.addEventListener(`click`, () => {
+      renderCardFilmDetails(i);
+      closePopupElement();
+    });
+  });
+};
+
+showFilmDetails();
