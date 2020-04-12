@@ -1,9 +1,15 @@
-export const createSortFilmsTemplate = () => {
+const createSortFilmMarkup = (title, isActive) => {
+  return (
+    `<li><a href="#" class="sort__button ${isActive ? `sort__button--active` : ``}">${title}</a></li>`
+  );
+};
+
+
+export const createSortFilmsTemplate = (titles) => {
+  const sortFilmMarkup = titles.map((it, i) => createSortFilmMarkup(it, i === 0)).join(`\n`);
   return (
     `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-      <li><a href="#" class="sort__button">Sort by date</a></li>
-      <li><a href="#" class="sort__button">Sort by rating</a></li>
+      ${sortFilmMarkup}
      </ul>`
   );
 };
