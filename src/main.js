@@ -12,7 +12,7 @@ import {createFilmsCountTemplate} from "./components/films-count.js";
 import {generateFilms} from "./mock/film.js";
 import {generateFilters} from "./mock/filter.js";
 import {sortFilmTitles} from "./mock/sortFilm.js";
-import {rank} from "./mock/profile.js";
+import {getUserRank} from "./mock/profile.js";
 // import {generateExtraFilmCard} from "./mock/extra-films.js";
 import {render} from "./utils.js";
 
@@ -23,10 +23,11 @@ const SHOWING_CARD_COUNT_BY_BUTTON = 5;
 
 const films = generateFilms(CARD_COUNT);
 const filters = generateFilters(films);
+const userRank = getUserRank(filters);
 
 const siteHeaderElement = document.querySelector(`.header`);
 
-render(siteHeaderElement, createProfileTemplate(rank), `beforeend`);
+render(siteHeaderElement, createProfileTemplate(userRank), `beforeend`);
 
 const siteMainElement = document.querySelector(`.main`);
 
