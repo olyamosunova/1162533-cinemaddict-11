@@ -1,3 +1,8 @@
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREND: `beforend`
+};
+
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
@@ -19,8 +24,22 @@ const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
 };
 
-export {formatTime, getRandomArrayItem, getRandomIntegerNumber, render};
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREND:
+      container.append(element);
+      break;
+  }
+};
+
+export {formatTime, getRandomArrayItem, getRandomIntegerNumber, render, RenderPosition, createElement};

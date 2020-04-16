@@ -1,4 +1,5 @@
 import {EXTRA_FILM_LIST_TITLES} from "../const.js";
+import {createElement} from "../utils";
 
 const extraFilmListMarkup = () => {
   return EXTRA_FILM_LIST_TITLES.map((title) => {
@@ -11,8 +12,29 @@ const extraFilmListMarkup = () => {
   }).join(`\n`);
 };
 
-export const createExtraFilmListTemplate = () => {
+const createExtraFilmListTemplate = () => {
   return (
     `${extraFilmListMarkup()}`
   );
 };
+
+export default class ExtraFilmList {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createExtraFilmListTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
