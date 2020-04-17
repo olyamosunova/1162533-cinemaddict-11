@@ -32,14 +32,27 @@ const renderFilm = (filmsListElement, film) => {
     });
   };
 
+  const openPopupElement = () => {
+    render(bodyElement, filmDetailsComponent.getElement(), RenderPosition.BEFOREND);
+    closePopupElement();
+  };
+
   const filmDetailsComponent = new FilmDetailsComponent(film);
   const filmCardComponent = new FilmCardComponent(film);
-  const openPopupButton = filmCardComponent.getElement().querySelector(`.film-card__poster`);
+  const posterFilmElement = filmCardComponent.getElement().querySelector(`.film-card__poster`);
+  const titleFilmElement = filmCardComponent.getElement().querySelector(`.film-card__title`);
+  const commentsFilmElement = filmCardComponent.getElement().querySelector(`.film-card__comments`);
 
-  openPopupButton.addEventListener(`click`, () => {
-    render(bodyElement, filmDetailsComponent.getElement(), RenderPosition.BEFOREND);
+  posterFilmElement.addEventListener(`click`, () => {
+    openPopupElement();
+  });
 
-    closePopupElement();
+  titleFilmElement.addEventListener(`click`, () => {
+    openPopupElement();
+  });
+
+  commentsFilmElement.addEventListener(`click`, () => {
+    openPopupElement();
   });
 
   render(filmsListElement, filmCardComponent.getElement(), RenderPosition.BEFOREND);
