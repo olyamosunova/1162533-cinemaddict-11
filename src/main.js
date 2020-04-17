@@ -2,8 +2,6 @@ import ProfileComponent from "./components/profile.js";
 import FilterComponent from "./components/filter.js";
 import FilmCardComponent from "./components/film-card.js";
 import ShowMoreButtonComponent from "./components/show-more-button.js";
-import {FilmCardTopRatedComponent} from "./components/film-card-top-rated.js";
-import {createFilmCardMostCommentedTemplate} from "./components/film-card-most-commented.js";
 import FilmDetailsComponent from "./components/film-details.js";
 import FilmsContainerComponent from "./components/films-container.js";
 import ExtraFilmListComponent from "./components/extra-film-list.js";
@@ -79,8 +77,6 @@ const renderFilmsList = (filmsContainerComponent, films) => {
   const showMoreButtonComponent = new ShowMoreButtonComponent();
   render(filmsContainerComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREND);
 
-  //const extraFilmListComponent = new ExtraFilmListComponent();
-
   for (let i = 0; i < EXTRA_LIST_COUNT; i++) {
     const extraFilmListComponent = new ExtraFilmListComponent();
 
@@ -126,8 +122,6 @@ const userRank = getUserRank(filters);
 
 const topRatedFilms = films.sort((a, b) => b.rating - a.rating).slice(0, EXTRA_CARD_COUNT);
 const mostCommentedFilms = films.sort((a, b) => b.comments.length - a.comments.length).slice(0, EXTRA_CARD_COUNT);
-
-console.log(topRatedFilms[0].allGenres[0]);
 
 render(siteHeaderElement, new ProfileComponent(userRank).getElement(), RenderPosition.BEFOREND);
 render(siteMainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREND);
