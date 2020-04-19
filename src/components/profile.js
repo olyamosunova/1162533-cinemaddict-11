@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 export const createProfileTemplate = (rank) => {
   return (
     `<section class="header__profile profile">
@@ -6,3 +8,26 @@ export const createProfileTemplate = (rank) => {
     </section>`
   );
 };
+
+export default class Profile {
+  constructor(rank) {
+    this._rank = rank;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createProfileTemplate(this._rank);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

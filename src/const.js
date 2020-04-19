@@ -1,4 +1,4 @@
-export const MONTH_NAMES = [
+const MONTH_NAMES = [
   `January`,
   `February`,
   `March`,
@@ -13,4 +13,11 @@ export const MONTH_NAMES = [
   `December`,
 ];
 
-export const EXTRA_FILM_LIST_TITLES = [`Top rated`, `Most commented`];
+const EXTRA_FILM_LIST_TITLES = [`Top rated`, `Most commented`];
+
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREND: `beforend`
+};
+
+export {MONTH_NAMES, EXTRA_FILM_LIST_TITLES, RenderPosition};
