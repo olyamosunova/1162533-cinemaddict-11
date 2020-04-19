@@ -9,9 +9,10 @@ import SortFilmsComponent from "./components/sort-films.js";
 import FilmsCountComponent from "./components/films-count.js";
 import {generateFilms} from "./mock/film.js";
 import {generateFilters} from "./mock/filter.js";
-import {sortFilmTitles} from "./mock/sortFilm.js";
 import {getUserRank} from "./mock/profile.js";
-import {render, RenderPosition} from "./utils.js";
+import {render} from "./utils.js";
+import {sortFilmTitles} from "./mock/sortFilm.js";
+import {RenderPosition} from "./const.js";
 
 const EXTRA_LIST_COUNT = 2;
 const EXTRA_CARD_COUNT = 2;

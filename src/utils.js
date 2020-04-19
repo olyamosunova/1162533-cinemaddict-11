@@ -1,7 +1,4 @@
-const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREND: `beforend`
-};
+import {RenderPosition} from "./const";
 
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
@@ -42,4 +39,4 @@ const render = (container, element, place) => {
   }
 };
 
-export {formatTime, getRandomArrayItem, getRandomIntegerNumber, render, RenderPosition, createElement};
+export {formatTime, getRandomArrayItem, getRandomIntegerNumber, render, createElement};
