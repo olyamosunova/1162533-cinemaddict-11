@@ -21,19 +21,28 @@ const SHOWING_CARD_COUNT_ON_START = 5;
 const SHOWING_CARD_COUNT_BY_BUTTON = 5;
 
 const renderFilm = (filmsListElement, film) => {
+  const removePopupElement = () => {
+    filmDetailsComponent.getElement().remove();
+    filmDetailsComponent.removeElement();
+  };
+
   const closePopupElement = () => {
-
     const closePopupButton = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
+    closePopupButton.addEventListener(`click`, removePopupElement);
+  };
 
-    closePopupButton.addEventListener(`click`, () => {
-      filmDetailsComponent.getElement().remove();
-      filmDetailsComponent.removeElement();
-    });
+  const onEscKeyDown = (evt) => {
+    const isEscCode = evt.keyCode === 27;
+
+    if (isEscCode) {
+      removePopupElement();
+    }
   };
 
   const openPopupElement = () => {
     render(bodyElement, filmDetailsComponent.getElement(), RenderPosition.BEFOREND);
     closePopupElement();
+    document.addEventListener(`keydown`, onEscKeyDown);
   };
 
   const filmDetailsComponent = new FilmDetailsComponent(film);
