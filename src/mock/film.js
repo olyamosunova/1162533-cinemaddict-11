@@ -1,4 +1,4 @@
-import {formatTime, getRandomArrayItem, getRandomIntegerNumber} from '../utils.js';
+import {formatTime, getRandomArrayItem, getRandomIntegerNumber} from '../utils/common';
 import {MONTH_NAMES} from '../const.js';
 
 const PROBABILITY = 0.5;
