@@ -66,8 +66,8 @@ export default class PageController {
 
     const filmsListElement = container.querySelector(`.films-list__container`);
 
-    let showingTasksCount = SHOWING_CARD_COUNT_ON_START;
-    films.slice(0, showingTasksCount)
+    let showingFilmsCount = SHOWING_CARD_COUNT_ON_START;
+    films.slice(0, showingFilmsCount)
       .forEach((film) => {
         renderFilm(filmsListElement, film);
       });
@@ -99,13 +99,13 @@ export default class PageController {
     }
 
     showMoreButtonComponent.setClickHandler(() => {
-      const prevTasksCount = showingTasksCount;
-      showingTasksCount = showingTasksCount + SHOWING_CARD_COUNT_BY_BUTTON;
+      const prevFilmsCount = showingFilmsCount;
+      showingFilmsCount = showingFilmsCount + SHOWING_CARD_COUNT_BY_BUTTON;
 
-      films.slice(prevTasksCount, showingTasksCount)
+      films.slice(prevFilmsCount, showingFilmsCount)
         .forEach((film) => renderFilm(filmsListElement, film));
 
-      if (showingTasksCount >= films.length) {
+      if (showingFilmsCount >= films.length) {
         remove(showMoreButtonComponent);
       }
     });
