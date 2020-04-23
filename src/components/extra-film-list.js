@@ -1,5 +1,5 @@
 import {EXTRA_FILM_LIST_TITLES} from "../const.js";
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const extraFilmListMarkup = () => {
   return EXTRA_FILM_LIST_TITLES.map((title) => {
@@ -18,23 +18,8 @@ const createExtraFilmListTemplate = () => {
   );
 };
 
-export default class ExtraFilmList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ExtraFilmList extends AbstractComponent {
   getTemplate() {
     return createExtraFilmListTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
