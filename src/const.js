@@ -17,7 +17,9 @@ const EXTRA_FILM_LIST_TITLES = [`Top rated`, `Most commented`];
 
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREND: `beforend`
+  AFTEREND: `afterend`,
+  BEFOREND: `beforend`,
+  BEFOREBEGIN: `beforebegin`,
 };
 
 export {MONTH_NAMES, EXTRA_FILM_LIST_TITLES, RenderPosition};

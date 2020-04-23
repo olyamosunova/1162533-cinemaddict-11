@@ -79,7 +79,7 @@ const generateComments = (count) => {
 
 const generateGenre = () => {
   const genreList = [];
-  const countGenre = getRandomIntegerNumber(0, GENRES.length);
+  const countGenre = getRandomIntegerNumber(1, GENRES.length);
   for (let i = 0; i < countGenre; i++) {
     genreList.push(getRandomArrayItem(GENRES));
   }
@@ -102,8 +102,7 @@ const generateFilm = () => {
     director: getRandomArrayItem(ATHORS),
     writers: ATHORS,
     actors: ATHORS,
-    releaseDate: `${getRandomIntegerNumber(1, 28)}
-      ${getRandomArrayItem(MONTH_NAMES)}`,
+    releaseDate: `${getRandomIntegerNumber(1, 28)} ${getRandomArrayItem(MONTH_NAMES)}`,
     country: getRandomArrayItem(COUNTRIES),
     age: getRandomIntegerNumber(0, 18),
     allGenres: generateGenre(),
