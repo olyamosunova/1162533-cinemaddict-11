@@ -97,9 +97,8 @@ export default class PageController {
         return;
       }
 
-      if (this._showMoreButtonComponent) {
-        render(filmsListElement, this._showMoreButtonComponent, RenderPosition.AFTEREND);
-      }
+      remove(this._showMoreButtonComponent);
+      render(filmsListElement, this._showMoreButtonComponent, RenderPosition.AFTEREND);
 
       this._showMoreButtonComponent.setClickHandler(() => {
         const prevFilmsCount = showingFilmsCount;
