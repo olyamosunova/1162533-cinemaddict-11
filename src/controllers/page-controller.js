@@ -54,7 +54,7 @@ const renderFilm = (filmsListElement, film) => {
 const renderFilms = (filmsListElement, films) => {
   films.forEach((film) => {
     renderFilm(filmsListElement, film);
-  })
+  });
 };
 
 const getSortedFilms = (films, sortType, from, to) => {
@@ -67,7 +67,7 @@ const getSortedFilms = (films, sortType, from, to) => {
       sortedFilms = showingFilms;
       break;
     case SortType.DATE:
-      sortedFilms = showingFilms;
+      sortedFilms = showingFilms.sort((a, b) => b.year - a.year);
       break;
     case SortType.RATING:
       sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
