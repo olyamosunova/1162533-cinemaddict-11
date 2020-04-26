@@ -1,5 +1,6 @@
-import {formatTime, getRandomArrayItem, getRandomIntegerNumber} from '../utils/common';
+import {getRandomArrayItem, getRandomIntegerNumber} from '../utils/common';
 import {MONTH_NAMES} from '../const.js';
+import {getRandomDate} from "../utils/common";
 
 const PROBABILITY = 0.5;
 
@@ -34,23 +35,6 @@ const GENRES = [`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`];
 
 const COUNTRIES = [`USA`, `Germany`, `France`, `UK`, `China`, `Russia`];
 
-const getRandomDate = () => {
-  // создаем дату Thu Apr 09 2020 20:50:20 GMT+0200 (Центральная Африка)
-  const targetDate = new Date();
-  // рандомно вычисляем, будеи ли мы прибавлять к текущей дате или вычитать
-  const sign = Math.random() > 0.5 ? 1 : -1;
-  // рандомно прибавляем/вычисляем сгенирированное число дней (вв пределах недели)
-  const diffValue = sign * getRandomIntegerNumber(0, 8);
-  // конечная рандомная дата
-  targetDate.setDate(targetDate.getDate() + diffValue);
-  // приводим в следующий вид `2019/12/31 23:59`
-  let day = (targetDate.getDay() / 10 < 1) ? (`0` + targetDate.getDay()) : targetDate.getDay();
-  let month = (targetDate.getMonth() / 10 < 1) ? (`0` + targetDate.getMonth()) : targetDate.getMonth();
-  let date = `${targetDate.getFullYear()}/${month}/${day} ${formatTime(targetDate)}`;
-
-  return date;
-};
-
 const generateDescription = (count) => {
   let desctiptions = [];
   for (let i = 0; i < count; i++) {
@@ -79,7 +63,7 @@ const generateComments = (count) => {
 
 const generateGenre = () => {
   const genreList = [];
-  const countGenre = getRandomIntegerNumber(0, GENRES.length);
+  const countGenre = getRandomIntegerNumber(1, GENRES.length);
   for (let i = 0; i < countGenre; i++) {
     genreList.push(getRandomArrayItem(GENRES));
   }
@@ -102,8 +86,7 @@ const generateFilm = () => {
     director: getRandomArrayItem(ATHORS),
     writers: ATHORS,
     actors: ATHORS,
-    releaseDate: `${getRandomIntegerNumber(1, 28)}
-      ${getRandomArrayItem(MONTH_NAMES)}`,
+    releaseDate: `${getRandomIntegerNumber(1, 28)} ${getRandomArrayItem(MONTH_NAMES)}`,
     country: getRandomArrayItem(COUNTRIES),
     age: getRandomIntegerNumber(0, 18),
     allGenres: generateGenre(),

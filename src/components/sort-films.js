@@ -1,28 +1,57 @@
 import AbstractComponent from "./abstract-component";
 
-const createSortFilmMarkup = (title, isActive) => {
-  return (
-    `<li><a href="#" class="sort__button ${isActive ? `sort__button--active` : ``}">${title}</a></li>`
-  );
+// Сортировка работает в одном направлении — от максимального к минимальному:
+//  при сортировке по дате выхода в начале списка будут самые новые фильмы,
+//  при сортировке по рейтингу — с самым высоким рейтингом.
+
+export const SortType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
 };
 
-
-const createSortFilmsTemplate = (titles) => {
-  const sortFilmMarkup = titles.map((it, i) => createSortFilmMarkup(it, i === 0)).join(`\n`);
+const createSortFilmsTemplate = () => {
   return (
     `<ul class="sort">
-      ${sortFilmMarkup}
+      <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
+      <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
+      <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
      </ul>`
   );
 };
 
 export default class SortFilms extends AbstractComponent {
-  constructor(titles) {
+  constructor() {
     super();
-    this._titles = titles;
+
+    this._currentSortType = SortType.DEFAULT;
   }
 
   getTemplate() {
-    return createSortFilmsTemplate(this._titles);
+    return createSortFilmsTemplate();
+  }
+
+  getSortType() {
+    return this._currentSortType;
+  }
+
+  setSortTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const sortType = evt.target.dataset.sortType;
+
+      if (this._currentSortType === sortType) {
+        return;
+      }
+
+      this._currentSortType = sortType;
+
+      handler(this._currentSortType);
+    });
   }
 }
