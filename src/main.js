@@ -1,6 +1,6 @@
 import ProfileComponent from "./components/profile";
 import FilterComponent from "./components/filter";
-import FilmsContainerComponent from "./components/films-container";
+import FilmsComponent from "./components/films";
 import FilmsCountComponent from "./components/films-count";
 import PageController from "./controllers/page-controller";
 import {generateFilms} from "./mock/film";
@@ -23,9 +23,9 @@ render(siteHeaderElement, new ProfileComponent(userRank), RenderPosition.BEFOREN
 render(siteMainElement, new FilterComponent(filters), RenderPosition.BEFOREND);
 render(siteFooterElement, new FilmsCountComponent(`130 291`), RenderPosition.BEFOREND);
 
-const filmsContainerComponent = new FilmsContainerComponent();
-render(siteMainElement, filmsContainerComponent, RenderPosition.BEFOREND);
+const filmsComponent = new FilmsComponent();
+render(siteMainElement, filmsComponent, RenderPosition.BEFOREND);
 
-const pageController = new PageController(filmsContainerComponent);
+const pageController = new PageController(filmsComponent);
 
 pageController.render(films);

@@ -1,48 +1,88 @@
-import {remove, render} from "../utils/render";
+import {remove, replace, render} from "../utils/render";
 import {RenderPosition} from "../const";
 import FilmDetailsComponent from "../components/film-details";
 import FilmCardComponent from "../components/film-card";
 
+const Mode = {
+  DEFAULT: `default`,
+  POPUP_OPENED: `popup-opened`,
+};
 
-export default class movieController {
-  constructor(container) {
+
+export default class MovieController {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
 
-    this.filmCardComponent = null;
-    this._filmDetailCOmponent = null;
+    this._filmCardComponent = null;
+    this._filmDetailsComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   render(film) {
-    this.filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsCOmponent = new FilmDetailsComponent(film);
+    const oldFilmCardComponent = this._filmCardComponent;
+    const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this.filmCardComponent.setPosterClickHandler(() => {
+    this._filmCardComponent = new FilmCardComponent(film);
+    this._filmDetailsComponent = new FilmDetailsComponent(film);
+
+    this._filmCardComponent.setPosterClickHandler(() => {
       this._openPopupElement();
     });
 
-    this.filmCardComponent.setTitleClickHandler(() => {
+    this._filmCardComponent.setTitleClickHandler(() => {
       this._openPopupElement();
     });
 
-    this.filmCardComponent.setCommentsClickHandler(() => {
+    this._filmCardComponent.setCommentsClickHandler(() => {
       this._openPopupElement();
     });
 
-    render(this._container, this.filmCardComponent, RenderPosition.BEFOREND);
+    this._filmCardComponent.setAddWatchButtonClickHandler(() => {
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isAddWatchlist: !film.isAddWatchlist,
+      }));
+    });
+
+    this._filmCardComponent.setWatchedButtonClickHandler(() => {
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isAlreadyWatched: !film.isAlreadyWatched,
+      }));
+    });
+
+    this._filmCardComponent.setFavoritesButtonClickHandler(() => {
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isAddFavorites: !film.isAddFavorites,
+      }));
+    });
+
+    if (oldFilmCardComponent && oldFilmDetailsComponent) {
+      replace(this._filmCardComponent, oldFilmCardComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+    } else {
+      render(this._container, this._filmCardComponent, RenderPosition.BEFOREND);
+    }
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._closePopupElement();
+    }
   }
 
   _openPopupElement() {
     const bodyElement = document.querySelector(`body`);
-    render(bodyElement, this._filmDetailsCOmponent, RenderPosition.BEFOREND);
+    render(bodyElement, this._filmDetailsComponent, RenderPosition.BEFOREND);
     this._closePopupElement();
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _closePopupElement() {
-    this.filmCardComponent.setCloseButtonClickHandler(() => {
-      remove(this.filmCardComponent);
+    this._filmDetailsComponent.setCloseButtonClickHandler(() => {
+      remove(this._filmDetailsComponent);
     });
   }
 
@@ -50,7 +90,7 @@ export default class movieController {
     const isEscCode = evt.keyCode === 27;
 
     if (isEscCode) {
-      remove(this._filmDetailsCOmponent);
+      remove(this._filmDetailsComponent);
     }
   }
 }

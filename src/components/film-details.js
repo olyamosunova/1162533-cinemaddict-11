@@ -1,5 +1,5 @@
 import {EMOTIONS} from "../mock/film";
-import AbstractComponent from "./abstract-component";
+import AbstractSmartComponent from "./abstract-smart-component";
 
 const createCommentMarkup = (comments) => {
   return comments.map((comment) => {
@@ -157,18 +157,52 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
-export default class FilmDetails extends AbstractComponent {
+export default class FilmDetails extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
+    this._closeButtonClickHandler = null;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
   }
 
+  recoveryListeners() {
+    this.setCloseButtonClickHandler(this._closeButtonClickHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  };
+
+  reset() {
+    const film = this._film;
+
+    this.rerender();
+  };
+
   setCloseButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, handler);
+
+    this._closeButtonClickHandler = handler;
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    const emojiBlock = element.querySelector(`.film-details__add-emoji-label`);
+
+    element.querySelectorAll(`.film-details__emoji-item`)
+      .forEach((item) => {
+        item.addEventListener(`click`, () => {
+          const img = `<img src="images/emoji/${item.getAttribute(`value`)}.png" width="55" height="55" alt="emoji-${item.getAttribute(`value`)}">`;
+          emojiBlock.addChild(img);
+
+          this.rerender();
+        });
+      });
   }
 }
