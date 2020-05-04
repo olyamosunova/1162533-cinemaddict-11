@@ -1,5 +1,12 @@
 import AbstractComponent from "./abstract-component";
 
+export const FilterType = {
+  DEFAULT: `#All movies`,
+  WATCHLIST: `#Watchlist`,
+  HISTORY: `#History`,
+  FAVORITES: `#Favorites`,
+};
+
 const createFilterMarkup = (filter, isActive) => {
   const {title, count} = filter;
   return (
@@ -24,10 +31,32 @@ const createFilterTemplate = (filters) => {
 export default class Filter extends AbstractComponent {
   constructor(filters) {
     super();
+
     this._filters = filters;
+    this._currentFilterType = FilterType.DEFAULT;
   }
 
   getTemplate() {
     return createFilterTemplate(this._filters);
+  }
+
+  setFilterTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const filterType = evt.target.href;
+
+      if (this._currentFilterType === filterType) {
+        return;
+      }
+
+      this._currentFilterType = filterType;
+
+      handler(this._currentFilterType);
+    });
   }
 }

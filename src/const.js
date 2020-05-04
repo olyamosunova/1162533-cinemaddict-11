@@ -13,8 +13,6 @@ const MONTH_NAMES = [
   `December`,
 ];
 
-const EXTRA_FILM_LIST_TITLES = [`Top rated`, `Most commented`];
-
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
@@ -22,4 +20,4 @@ const RenderPosition = {
   BEFOREBEGIN: `beforebegin`,
 };
 
-export {MONTH_NAMES, EXTRA_FILM_LIST_TITLES, RenderPosition};
+export {MONTH_NAMES, RenderPosition};
