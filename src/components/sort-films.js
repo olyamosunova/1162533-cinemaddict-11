@@ -39,6 +39,11 @@ export default class SortFilms extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
+      const sortClass = evt.target.getAttribute(`class`);
+      const sortingControlElements = this.getElement().querySelectorAll(`.${sortClass}`);
+
+      sortingControlElements.forEach((item) => item.classList.remove(`sort__button--active`));
+
       if (evt.target.tagName !== `A`) {
         return;
       }
@@ -50,6 +55,8 @@ export default class SortFilms extends AbstractComponent {
       }
 
       this._currentSortType = sortType;
+
+      evt.target.classList.add(`${sortClass}--active`);
 
       handler(this._currentSortType);
     });

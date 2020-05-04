@@ -97,8 +97,8 @@ export default class MovieController {
 
   _closePopupElement() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._filmDetailsComponent.reset();
     remove(this._filmDetailsComponent);
+    this._filmDetailsComponent.reset();
     this._mode = Mode.DEFAULT;
   }
 
