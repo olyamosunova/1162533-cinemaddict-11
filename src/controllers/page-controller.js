@@ -4,7 +4,6 @@ import ShowMoreButtonComponent from "../components/show-more-button";
 import SortFilmsComponent, {SortType} from "../components/sort-films";
 import FilmsContainer from "../components/films-container";
 import MovieController from "./movie-controller";
-import {FilterType} from "../components/filter";
 import ExtraFilmsComponent from "../components/extra-films";
 
 const EXTRA_CARD_COUNT = 2;
@@ -19,29 +18,6 @@ const renderMovies = (filmsListElement, films, onDataChange, onViewChange) => {
 
     return movieController;
   });
-};
-
-const getFilteredFilms = (films, filterType, from, to) => {
-  let filteredFilms = [];
-
-  const showingFilms = films.slice();
-
-  switch (filterType) {
-    case FilterType.DEFAULT:
-      filteredFilms = showingFilms;
-      break;
-    case FilterType.WATCHLIST:
-      filteredFilms = showingFilms.filter((film) => film.isAddWatchlist ? film : ``);
-      break;
-    case FilterType.HISTORY:
-      filteredFilms = showingFilms.filter((film) => film.isAlreadyWatched ? film : ``);
-      break;
-    case FilterType.FAVORITES:
-      filteredFilms = showingFilms.filter((film) => film.isAddFavorites ? film : ``);
-      break;
-  }
-
-  return filteredFilms.slice(from, to);
 };
 
 const getSortedFilms = (films, sortType, from, to) => {

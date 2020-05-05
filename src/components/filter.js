@@ -39,24 +39,4 @@ export default class Filter extends AbstractComponent {
   getTemplate() {
     return createFilterTemplate(this._filters);
   }
-
-  setFilterTypeChangeHandler(handler) {
-    this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-
-      if (evt.target.tagName !== `A`) {
-        return;
-      }
-
-      const filterType = evt.target.href;
-
-      if (this._currentFilterType === filterType) {
-        return;
-      }
-
-      this._currentFilterType = filterType;
-
-      handler(this._currentFilterType);
-    });
-  }
 }
