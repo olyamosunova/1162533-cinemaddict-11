@@ -42,7 +42,7 @@ const createGenreMarkup = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film, options) => {
-  const {title, poster, description, comments, rating, year, duration,
+  const {title, poster, description, comments, rating, duration,
     isAddWatchlist, isAlreadyWatched, isAddFavorites, originTitle, director, writers,
     actors, releaseDate, country, age, allGenres} = film;
   const {isEmojiShowing, nameEmoji} = options;
@@ -97,7 +97,7 @@ const createFilmDetailsTemplate = (film, options) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate} ${year}</td>
+                  <td class="film-details__cell">${releaseDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
