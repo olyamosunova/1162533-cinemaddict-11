@@ -1,18 +1,3 @@
-const MONTH_NAMES = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`,
-];
-
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
@@ -20,4 +5,10 @@ const RenderPosition = {
   BEFOREBEGIN: `beforebegin`,
 };
 
-export {MONTH_NAMES, RenderPosition};
+const TimeToken = {
+  TIME: `h[h] m[m]`,
+  DATE: `DD MM YYYY`,
+  YEAR: `YYYY`,
+};
+
+export {RenderPosition, TimeToken};

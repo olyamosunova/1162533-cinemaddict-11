@@ -30,7 +30,7 @@ const getSortedFilms = (films, sortType, from, to) => {
       sortedFilms = showingFilms;
       break;
     case SortType.DATE:
-      sortedFilms = showingFilms.sort((a, b) => b.year - a.year);
+      sortedFilms = showingFilms.sort((a, b) => b.fullDate - a.fullDate);
       break;
     case SortType.RATING:
       sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);

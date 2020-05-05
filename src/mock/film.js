@@ -1,6 +1,6 @@
-import {getRandomArrayItem, getRandomIntegerNumber} from '../utils/common';
-import {MONTH_NAMES} from '../const.js';
-import {getRandomDate} from "../utils/common";
+import {formatMovieDuration, formatCommentsDate, getRandomDate,
+  getRandomArrayItem, getRandomIntegerNumber, formatDate} from '../utils/common';
+import {TimeToken} from "../const";
 
 const PROBABILITY = 0.5;
 
@@ -36,18 +36,18 @@ const GENRES = [`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`];
 const COUNTRIES = [`USA`, `Germany`, `France`, `UK`, `China`, `Russia`];
 
 const generateDescription = (count) => {
-  let desctiptions = [];
+  let descriptions = [];
   for (let i = 0; i < count; i++) {
-    desctiptions.push(getRandomArrayItem(DESCRIPTIONS));
+    descriptions.push(getRandomArrayItem(DESCRIPTIONS));
   }
-  return desctiptions;
+  return descriptions;
 };
 
 const createComment = () => {
   const dueDate = getRandomDate();
   return {
     emotion: getRandomArrayItem(EMOTIONS),
-    date: dueDate,
+    date: formatCommentsDate(dueDate),
     author: getRandomArrayItem(ATHORS),
     message: getRandomArrayItem(COMMENTS),
   };
@@ -71,14 +71,16 @@ const generateGenre = () => {
 };
 
 const generateFilm = () => {
+  const dueDate = getRandomDate();
   return {
+    fullDate: dueDate,
     title: getRandomArrayItem(TITLES),
     poster: getRandomArrayItem(POSTERS),
     description: generateDescription(getRandomIntegerNumber(1, 5)),
     comments: generateComments(getRandomIntegerNumber(0, 5)),
     rating: getRandomIntegerNumber(0, 10),
-    year: getRandomIntegerNumber(1895, 2020),
-    duration: `${getRandomIntegerNumber(1, 3)}h ${getRandomIntegerNumber(1, 59)}m`,
+    year: formatDate(dueDate, TimeToken.YEAR),
+    duration: formatMovieDuration(getRandomIntegerNumber(30, 360)),
     isAddWatchlist: Math.random() > PROBABILITY,
     isAlreadyWatched: Math.random() > PROBABILITY,
     isAddFavorites: Math.random() > PROBABILITY,
@@ -86,7 +88,7 @@ const generateFilm = () => {
     director: getRandomArrayItem(ATHORS),
     writers: ATHORS,
     actors: ATHORS,
-    releaseDate: `${getRandomIntegerNumber(1, 28)} ${getRandomArrayItem(MONTH_NAMES)}`,
+    releaseDate: formatDate(dueDate, TimeToken.DATE),
     country: getRandomArrayItem(COUNTRIES),
     age: getRandomIntegerNumber(0, 18),
     allGenres: generateGenre(),

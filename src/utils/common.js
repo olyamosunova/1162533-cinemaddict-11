@@ -1,12 +1,19 @@
-const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
+import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
+import {TimeToken} from "../const";
+
+momentDurationFormatSetup(moment);
+
+const formatMovieDuration = (duration) => {
+  return moment.duration(duration, `minutes`).format(TimeToken.TIME);
 };
 
-const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours() % 12);
-  const minutes = castTimeFormat(date.getMinutes());
+const formatDate = (date, timeToken) => {
+  return moment(date).format(timeToken);
+};
 
-  return `${hours}:${minutes}`;
+const formatCommentsDate = (date) => {
+  return moment(date).fromNow();
 };
 
 const getRandomArrayItem = (array) => {
@@ -22,18 +29,12 @@ const getRandomIntegerNumber = (min, max) => {
 const getRandomDate = () => {
   // создаем дату Thu Apr 09 2020 20:50:20 GMT+0200 (Центральная Африка)
   const targetDate = new Date();
-  // рандомно вычисляем, будеи ли мы прибавлять к текущей дате или вычитать
-  const sign = Math.random() > 0.5 ? 1 : -1;
-  // рандомно прибавляем/вычисляем сгенирированное число дней (вв пределах недели)
-  const diffValue = sign * getRandomIntegerNumber(0, 8);
+  // рандомно вычисляем количество дней, которое будем вычитать (в пределах 5 лет ~ 1825 дней)
+  const diffValue = getRandomIntegerNumber(0, 1825);
   // конечная рандомная дата
-  targetDate.setDate(targetDate.getDate() + diffValue);
-  // приводим в следующий вид `2019/12/31 23:59`
-  let day = (targetDate.getDay() / 10 < 1) ? (`0` + targetDate.getDay()) : targetDate.getDay();
-  let month = (targetDate.getMonth() / 10 < 1) ? (`0` + targetDate.getMonth()) : targetDate.getMonth();
-  let date = `${targetDate.getFullYear()}/${month}/${day} ${formatTime(targetDate)}`;
+  targetDate.setDate(targetDate.getDate() - diffValue);
 
-  return date;
+  return targetDate;
 };
 
-export {formatTime, getRandomArrayItem, getRandomIntegerNumber, getRandomDate};
+export {formatMovieDuration, formatDate, formatCommentsDate, getRandomArrayItem, getRandomIntegerNumber, getRandomDate};
