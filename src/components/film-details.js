@@ -1,37 +1,5 @@
-import {EMOTIONS} from "../mock/film";
 import AbstractSmartComponent from "./abstract-smart-component";
-
-const createCommentMarkup = (comments) => {
-  return comments.map((comment) => {
-    const {emotion, date, author, message} = comment;
-    return (
-      `<li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">${message}</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">${author}</span>
-                    <span class="film-details__comment-day">${date}</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>`
-    );
-  }).join(`\n`);
-};
-
-const createEmojiMarkup = (isChecked, nameEmoji) => {
-  return EMOTIONS.map((emotion) => {
-    return (
-      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}" ${isChecked && emotion === nameEmoji ? `checked` : ``}>
-        <label class="film-details__emoji-label" for="emoji-${emotion}">
-            <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
-        </label>`
-    );
-  }).join(`\n`);
-};
+import CommentsComponent from "./comments";
 
 const createGenreMarkup = (genres) => {
   return genres.map((genre) => {
@@ -45,12 +13,9 @@ const createFilmDetailsTemplate = (film, options) => {
   const {title, poster, description, comments, rating, duration,
     isAddWatchlist, isAlreadyWatched, isAddFavorites, originTitle, director, writers,
     actors, releaseDate, country, age, allGenres} = film;
-  const {isEmojiShowing, nameEmoji} = options;
 
-  const commentsCount = comments.length;
-  const commentMarkup = createCommentMarkup(comments);
   const genreMarkup = createGenreMarkup(allGenres);
-  const emotionMarkup = createEmojiMarkup(isEmojiShowing, nameEmoji);
+  const commentsComponent = new CommentsComponent(comments, options).getTemplate();
 
   const addedButtonActiveClass = isAddWatchlist ? `checked` : ``;
   const watchedButtonActiveClass = isAlreadyWatched ? `checked` : ``;
@@ -131,37 +96,7 @@ const createFilmDetailsTemplate = (film, options) => {
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
-
-        <div class="form-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
-
-            <ul class="film-details__comments-list">
-              ${commentMarkup}
-            </ul>
-
-            <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label">
-              ${isEmojiShowing ?
-      `<img
-                src="images/emoji/${nameEmoji}.png"
-                width="55" height="55"
-                alt="emoji-${nameEmoji}"
-                >`
-      : ``
-    }
-            </div>
-
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-              </label>
-
-              <div class="film-details__emoji-list">
-                ${emotionMarkup}
-              </div>
-            </div>
-          </section>
-        </div>
+        ${commentsComponent}
       </form>
      </section>`
   );
@@ -171,6 +106,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
+
     this._isEmojiShowing = null;
     this._nameEmoji = null;
 
@@ -194,6 +130,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setAddWatchButtonClickHandler(this._addWatchButtonClickHandler);
     this.setWatchedButtonClickHandler(this._watchedButtonClickHandler);
     this.setFavoritesButtonClickHandler(this._favoritesButtonClickHandler);
+
     this._subscribeOnEvents();
   }
 
@@ -202,8 +139,6 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   reset() {
-    // const film = this._film;
-
     this._isEmojiShowing = null;
     this._nameEmoji = null;
 
