@@ -1,15 +1,11 @@
 import AbstractComponent from "./abstract-component";
 import {FilterType} from "../const";
-const FILTER_ID_PREFIX = `#`;
-
-const getFilterNameById = (id) => {
-  return id.substring(FILTER_ID_PREFIX.length);
-};
 
 const createFilterMarkup = (filter, isChecked) => {
   const {name, count} = filter;
   return (
     `<a href="#${name}"
+    data-filter-name="${name}"
     class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">${name}
     ${name === FilterType.ALL ? `` : `<span class="main-navigation__item-count">${count}</span>`}</a>`
   );
@@ -40,7 +36,20 @@ export default class Filter extends AbstractComponent {
 
   setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
-      const filterName = getFilterNameById(evt.target.href);
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const filterControlElements = this.getElement().querySelectorAll(`.main-navigation__item`);
+
+      filterControlElements.forEach((item) => item.classList.remove(`main-navigation__item--active`));
+
+      const filterName = evt.target.dataset.filterName;
+
+      evt.target.classList.add(`main-navigation__item--active`);
+
       handler(filterName);
     });
   }

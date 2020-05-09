@@ -7,7 +7,7 @@ const RenderPosition = {
 
 const TimeToken = {
   TIME: `h[h] m[m]`,
-  DATE: `DD MM YYYY`,
+  DATE: `DD MMMM YYYY`,
   YEAR: `YYYY`,
 };
 
