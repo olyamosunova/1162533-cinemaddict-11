@@ -95,6 +95,12 @@ export default class MovieController {
     }
   }
 
+  destroy() {
+    remove(this._filmDetailsComponent);
+    remove(this._filmCardComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
   _closePopupElement() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     remove(this._filmDetailsComponent);

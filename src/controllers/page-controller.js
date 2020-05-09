@@ -56,8 +56,11 @@ export default class PageController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._moviesModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -74,11 +77,16 @@ export default class PageController {
     this._renderShowMoreButton();
   }
 
+  _removeMovies() {
+    this._showedFilmControllers.forEach((movieController) => movieController.destroy());
+    this._showedFilmControllers = [];
+  }
+
   _renderMovies(movies) {
     const container = this._container.getElement();
 
-    const topRated = [...movies].sort((a, b) => b.rating - a.rating);
-    const mostCommented = [...movies].sort((a, b) => b.comments.length - a.comments.length);
+    const topRated = [...movies].sort((a, b) => b.rating - a.rating).slice(0, EXTRA_CARD_COUNT);
+    const mostCommented = [...movies].sort((a, b) => b.comments.length - a.comments.length).slice(0, EXTRA_CARD_COUNT);
 
     render(container, this._topRatedComponent, RenderPosition.BEFOREND);
     let containerExtraFilm = this._topRatedComponent.getElement();
@@ -106,15 +114,27 @@ export default class PageController {
     const filmContainerElement = this._filmsContainerComponent.getElement();
     render(filmContainerElement, this._showMoreButtonComponent, RenderPosition.AFTEREND);
 
-    this._showMoreButtonComponent.setClickHandler(() => {
-      const prevFilmsCount = this._showingMoviesCount;
-      const movies = this._moviesModel.getMovies();
-      this._showingMoviesCount = this._showingMoviesCount + SHOWING_MOVIES_COUNT_BY_BUTTON;
+    this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
+  }
 
-      const sortedFilms = getSortedFilms(movies, this._sortComponent.getSortType(), prevFilmsCount, this._showingMoviesCount);
-      const newMovies = renderMovies(filmContainerElement, sortedFilms, this._onDataChange, this._onViewChange);
-      this._showedFilmControllers = this._showedFilmControllers.concat(newMovies);
-    });
+  _updateMovies(count) {
+    this._removeMovies();
+    this._renderMovies(this._moviesModel.getMovies().slice(0, count));
+    this._renderShowMoreButton();
+  }
+
+  _onShowMoreButtonClick() {
+    const prevFilmsCount = this._showingMoviesCount;
+    const movies = this._moviesModel.getMovies();
+
+    this._showingMoviesCount = this._showingMoviesCount + SHOWING_MOVIES_COUNT_BY_BUTTON;
+
+    const sortedFilms = getSortedFilms(movies, this._sortComponent.getSortType(), prevFilmsCount, this._showingMoviesCount);
+    this._renderMovies(sortedFilms);
+
+    if (this._showingMoviesCount >= sortedFilms.length) {
+      remove(this._showMoreButtonComponent);
+    }
   }
 
   _onDataChange(movieController, oldData, newData) {
@@ -133,13 +153,13 @@ export default class PageController {
     this._showingMoviesCount = SHOWING_MOVIES_COUNT_ON_START;
 
     const sortedFilms = getSortedFilms(this._moviesModel.getMovies(), sortType, 0, this._showingMoviesCount);
-    const filmContainerElement = this._filmsContainerComponent.getElement();
-
-    filmContainerElement.innerHTML = ``;
-
-    const newMovies = renderMovies(filmContainerElement, sortedFilms, this._onDataChange, this._onViewChange);
-    this._showedFilmControllers = newMovies;
+    this._removeMovies();
+    this._renderMovies(sortedFilms);
 
     this._renderShowMoreButton();
+  }
+
+  _onFilterChange() {
+    this._updateMovies(SHOWING_MOVIES_COUNT_ON_START);
   }
 }

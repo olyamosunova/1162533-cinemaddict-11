@@ -16,8 +16,8 @@ const RANK = {
   },
 };
 
-const getUserRank = (filters) => {
-  const countFilms = filters.filter((it) => it.title.includes(`History`)).map(({count}) => count);
+const getUserRank = (movies) => {
+  const countFilms = movies.length;
   const ranks = Object.values(RANK);
   const userRank = ranks.filter(({minCount, maxCount, rank}) => (countFilms >= minCount && countFilms <= maxCount) ? rank : ``);
   return userRank;

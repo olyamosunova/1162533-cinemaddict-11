@@ -44,5 +44,12 @@ const GENRES = [`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`];
 
 const COUNTRIES = [`USA`, `Germany`, `France`, `UK`, `China`, `Russia`];
 
-export {RenderPosition, TimeToken,
+const FilterType = {
+  ALL: `All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+};
+
+export {RenderPosition, TimeToken, FilterType,
   PROBABILITY, TITLES, POSTERS, ATHORS, DESCRIPTIONS, EMOTIONS, COMMENTS, GENRES, COUNTRIES};

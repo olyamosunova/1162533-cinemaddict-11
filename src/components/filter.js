@@ -1,23 +1,22 @@
 import AbstractComponent from "./abstract-component";
+import {FilterType} from "../const";
+const FILTER_ID_PREFIX = `#`;
 
-export const FilterType = {
-  DEFAULT: `#All movies`,
-  WATCHLIST: `#Watchlist`,
-  HISTORY: `#History`,
-  FAVORITES: `#Favorites`,
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
 };
 
-const createFilterMarkup = (filter, isActive) => {
-  const {title, count} = filter;
+const createFilterMarkup = (filter, isChecked) => {
+  const {name, count} = filter;
   return (
-    `<a href="#${title}"
-    class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}">${title}
-    ${count ? `<span class="main-navigation__item-count">${count}</span>` : ``}</a>`
+    `<a href="#${name}"
+    class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">${name}
+    ${name === FilterType.ALL ? `` : `<span class="main-navigation__item-count">${count}</span>`}</a>`
   );
 };
 
 const createFilterTemplate = (filters) => {
-  const filterMarkup = filters.map((it, i) => createFilterMarkup(it, i === 0)).join(`\n`);
+  const filterMarkup = filters.map((it) => createFilterMarkup(it, it.checked)).join(`\n`);
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -33,10 +32,16 @@ export default class Filter extends AbstractComponent {
     super();
 
     this._filters = filters;
-    this._currentFilterType = FilterType.DEFAULT;
   }
 
   getTemplate() {
     return createFilterTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      const filterName = getFilterNameById(evt.target.href);
+      handler(filterName);
+    });
   }
 }
