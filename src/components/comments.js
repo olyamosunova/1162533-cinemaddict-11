@@ -1,4 +1,4 @@
-import {EMOTIONS} from "../mock/film";
+import {EMOTIONS} from "../const";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 const createCommentMarkup = (comments) => {

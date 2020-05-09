@@ -41,10 +41,10 @@ const getSortedFilms = (films, sortType, from, to) => {
 };
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, moviesModel) {
     this._container = container;
+    this._moviesModel = moviesModel;
 
-    this._films = [];
     this._showedFilmControllers = [];
     this._showingMoviesCount = SHOWING_MOVIES_COUNT_ON_START;
     this._filmsContainerComponent = new FilmsContainer();
@@ -60,17 +60,25 @@ export default class PageController {
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
-  render(films) {
-    this._films = films;
+  render() {
     const container = this._container.getElement();
+    const movies = this._moviesModel.getMovies();
 
     const filmListElement = container.querySelector(`.films-list`);
 
     render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
     render(filmListElement, this._filmsContainerComponent, RenderPosition.BEFOREND);
 
-    const topRated = [...films].sort((a, b) => b.rating - a.rating).slice(0, EXTRA_CARD_COUNT);
-    const mostCommented = [...films].sort((a, b) => b.comments.length - a.comments.length).slice(0, EXTRA_CARD_COUNT);
+    this._renderMovies(movies.slice(0, this._showingMoviesCount));
+
+    this._renderShowMoreButton();
+  }
+
+  _renderMovies(movies) {
+    const container = this._container.getElement();
+
+    const topRated = [...movies].sort((a, b) => b.rating - a.rating);
+    const mostCommented = [...movies].sort((a, b) => b.comments.length - a.comments.length);
 
     render(container, this._topRatedComponent, RenderPosition.BEFOREND);
     let containerExtraFilm = this._topRatedComponent.getElement();
@@ -82,45 +90,39 @@ export default class PageController {
 
     const filmContainerElement = this._filmsContainerComponent.getElement();
 
-    const newMovies = renderMovies(filmContainerElement, this._films.slice(0, this._showingMoviesCount), this._onDataChange, this._onViewChange);
+    const newMovies = renderMovies(filmContainerElement, movies, this._onDataChange, this._onViewChange);
     this._showedFilmControllers = this._showedFilmControllers.concat(newMovies);
 
-    this._renderShowMoreButton();
+    this._showingMoviesCount = this._showedFilmControllers.length;
   }
 
   _renderShowMoreButton() {
-    if (this._showingMoviesCount >= this._films.length) {
+    remove(this._showMoreButtonComponent);
+
+    if (this._showingMoviesCount >= this._moviesModel.getMovies().length) {
       return;
     }
 
     const filmContainerElement = this._filmsContainerComponent.getElement();
-    remove(this._showMoreButtonComponent);
     render(filmContainerElement, this._showMoreButtonComponent, RenderPosition.AFTEREND);
 
     this._showMoreButtonComponent.setClickHandler(() => {
       const prevFilmsCount = this._showingMoviesCount;
+      const movies = this._moviesModel.getMovies();
       this._showingMoviesCount = this._showingMoviesCount + SHOWING_MOVIES_COUNT_BY_BUTTON;
 
-      const sortedFilms = getSortedFilms(this._films, this._sortComponent.getSortType(), prevFilmsCount, this._showingMoviesCount);
+      const sortedFilms = getSortedFilms(movies, this._sortComponent.getSortType(), prevFilmsCount, this._showingMoviesCount);
       const newMovies = renderMovies(filmContainerElement, sortedFilms, this._onDataChange, this._onViewChange);
       this._showedFilmControllers = this._showedFilmControllers.concat(newMovies);
-
-      if (this._showingMoviesCount >= this._films.length) {
-        remove(this._showMoreButtonComponent);
-      }
     });
   }
 
   _onDataChange(movieController, oldData, newData) {
-    const index = this._films.findIndex((it) => it === oldData);
+    const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      movieController.render(newData);
     }
-
-    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
-
-    movieController.render(this._films[index]);
   }
 
   _onViewChange() {
@@ -130,7 +132,7 @@ export default class PageController {
   _onSortTypeChange(sortType) {
     this._showingMoviesCount = SHOWING_MOVIES_COUNT_ON_START;
 
-    const sortedFilms = getSortedFilms(this._films, sortType, 0, this._showingMoviesCount);
+    const sortedFilms = getSortedFilms(this._moviesModel.getMovies(), sortType, 0, this._showingMoviesCount);
     const filmContainerElement = this._filmsContainerComponent.getElement();
 
     filmContainerElement.innerHTML = ``;

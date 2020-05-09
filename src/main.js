@@ -3,6 +3,7 @@ import FilterComponent from "./components/filter";
 import FilmsComponent from "./components/films";
 import FilmsCountComponent from "./components/films-count";
 import PageController from "./controllers/page-controller";
+import MoviesModel from "./models/movies";
 import {generateFilms} from "./mock/film";
 import {generateFilters} from "./mock/filter";
 import {getUserRank} from "./mock/profile";
@@ -16,6 +17,8 @@ const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
 const films = generateFilms(CARD_COUNT);
+const moviesModel = new MoviesModel();
+moviesModel.setMovies(films);
 const filters = generateFilters(films);
 const userRank = getUserRank(filters);
 
@@ -26,6 +29,6 @@ render(siteFooterElement, new FilmsCountComponent(`130 291`), RenderPosition.BEF
 const filmsComponent = new FilmsComponent();
 render(siteMainElement, filmsComponent, RenderPosition.BEFOREND);
 
-const pageController = new PageController(filmsComponent);
+const pageController = new PageController(filmsComponent, moviesModel);
 
 pageController.render(films);
