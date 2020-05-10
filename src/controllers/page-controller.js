@@ -6,7 +6,6 @@ import FilmsContainer from "../components/films-container";
 import MovieController from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
 
-const EXTRA_CARD_COUNT = 2;
 const SHOWING_MOVIES_COUNT_ON_START = 5;
 const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
 
@@ -72,6 +71,14 @@ export default class PageController {
     render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
     render(filmListElement, this._filmsContainerComponent, RenderPosition.BEFOREND);
 
+    render(container, this._topRatedComponent, RenderPosition.BEFOREND);
+    let containerExtraFilm = this._topRatedComponent.getElement();
+    renderMovies(containerExtraFilm.querySelector(`.films-list__container`), this._moviesModel.getTopRatedMovies(), this._onDataChange, this._onViewChange);
+
+    render(container, this._mostCommentedComponent, RenderPosition.BEFOREND);
+    containerExtraFilm = this._mostCommentedComponent.getElement();
+    renderMovies(containerExtraFilm.querySelector(`.films-list__container`), this._moviesModel.getMostCommentedMovies(), this._onDataChange, this._onViewChange);
+
     this._renderMovies(movies.slice(0, this._showingMoviesCount));
 
     this._renderShowMoreButton();
@@ -83,19 +90,6 @@ export default class PageController {
   }
 
   _renderMovies(movies) {
-    const container = this._container.getElement();
-
-    const topRated = [...movies].sort((a, b) => b.rating - a.rating).slice(0, EXTRA_CARD_COUNT);
-    const mostCommented = [...movies].sort((a, b) => b.comments.length - a.comments.length).slice(0, EXTRA_CARD_COUNT);
-
-    render(container, this._topRatedComponent, RenderPosition.BEFOREND);
-    let containerExtraFilm = this._topRatedComponent.getElement();
-    renderMovies(containerExtraFilm.querySelector(`.films-list__container`), topRated, this._onDataChange, this._onViewChange);
-
-    render(container, this._mostCommentedComponent, RenderPosition.BEFOREND);
-    containerExtraFilm = this._mostCommentedComponent.getElement();
-    renderMovies(containerExtraFilm.querySelector(`.films-list__container`), mostCommented, this._onDataChange, this._onViewChange);
-
     const filmContainerElement = this._filmsContainerComponent.getElement();
 
     const newMovies = renderMovies(filmContainerElement, movies, this._onDataChange, this._onViewChange);
@@ -121,7 +115,6 @@ export default class PageController {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, count));
     this._renderShowMoreButton();
-    // this._onSortTypeChange(SortType.DEFAULT);
   }
 
   _onDataChange(movieController, oldData, newData) {
