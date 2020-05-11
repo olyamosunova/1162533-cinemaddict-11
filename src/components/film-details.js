@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import CommentsComponent from "./comments";
+import {formatCommentsDate} from "../utils/common";
 
 const createGenreMarkup = (genres) => {
   return genres.map((genre) => {
@@ -114,6 +115,8 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._watchedButtonClickHandler = null;
     this._favoritesButtonClickHandler = null;
     this._closeButtonClickHandler = null;
+    this._deleteButtonClickHandler = null;
+    this._setCommentHandler = null;
 
     this._subscribeOnEvents();
   }
@@ -125,13 +128,55 @@ export default class FilmDetails extends AbstractSmartComponent {
     });
   }
 
+  removeElement() {
+    super.removeElement();
+  }
+
   recoveryListeners() {
     this.setCloseButtonClickHandler(this._closeButtonClickHandler);
     this.setAddWatchButtonClickHandler(this._addWatchButtonClickHandler);
     this.setWatchedButtonClickHandler(this._watchedButtonClickHandler);
     this.setFavoritesButtonClickHandler(this._favoritesButtonClickHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setSendCommentHandler(this._setCommentHandler);
 
     this._subscribeOnEvents();
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    const deleteButton = this._element.querySelector(`.film-details__comment-delete`);
+    if (deleteButton) {
+      deleteButton.addEventListener(`click`, handler);
+    }
+
+    this._deleteButtonClickHandler = handler;
+  }
+
+  setSendCommentHandler(handler) {
+    const commentElement = this._element.querySelector(`.film-details__comment-input`);
+    commentElement.addEventListener(`keydown`, handler);
+    this._setCommentHandler = handler;
+  }
+
+  dataComment() {
+    const message = this._element.querySelector(`.film-details__comment-input`).value;
+    const emotion = this._nameEmoji ? this._nameEmoji : ``;
+
+    if (!emotion || !message) {
+      return null;
+    }
+
+    const date = formatCommentsDate(new Date());
+    const id = String(new Date() + Math.random());
+    const author = `user`;
+
+    return {
+      message,
+      emotion,
+      date,
+      id,
+      author,
+    };
   }
 
   rerender() {

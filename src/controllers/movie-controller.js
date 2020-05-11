@@ -3,7 +3,7 @@ import {RenderPosition} from "../const";
 import FilmDetailsComponent from "../components/film-details";
 import FilmCardComponent from "../components/film-card";
 
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   POPUP_OPENED: `popup-opened`,
 };
@@ -22,7 +22,8 @@ export default class MovieController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(film) {
+  render(film, mode) {
+    this._mode = mode;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
@@ -79,6 +80,31 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         isAddFavorites: !film.isAddFavorites,
       }));
+    });
+
+    this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
+      evt.preventDefault();
+
+      const deleteButton = evt.target;
+      const commentElement = deleteButton.closest(`.film-details__comment`);
+      const deleteCommentId = commentElement.id;
+      const comments = film.comments.filter((comment) => comment.id !== deleteCommentId);
+
+      this._onDataChange(this, film, Object.assign(film, {comments}));
+    });
+
+    this._filmDetailsComponent.setSendCommentHandler((evt) => {
+      const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
+      if (isCtrlAndEnter) {
+        const comment = this._filmDetailsComponent.dataComment();
+
+        if (!comment) {
+          return;
+        }
+
+        const newComments = film.comments.concat(comment);
+        this._onDataChange(this, film, Object.assign(film, {comments: newComments}));
+      }
     });
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {

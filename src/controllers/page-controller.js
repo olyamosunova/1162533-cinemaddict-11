@@ -3,7 +3,7 @@ import {RenderPosition} from "../const";
 import ShowMoreButtonComponent from "../components/show-more-button";
 import SortFilmsComponent, {SortType} from "../components/sort-films";
 import FilmsContainer from "../components/films-container";
-import MovieController from "./movie-controller";
+import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
 
 const EXTRA_CARD_COUNT = 2;
@@ -14,7 +14,7 @@ const renderMovies = (filmsListElement, films, onDataChange, onViewChange) => {
   return films.map((film) => {
     const movieController = new MovieController(filmsListElement, onDataChange, onViewChange);
 
-    movieController.render(film);
+    movieController.render(film, MovieControllerMode);
 
     return movieController;
   });

@@ -3,9 +3,9 @@ import AbstractSmartComponent from "./abstract-smart-component";
 
 const createCommentMarkup = (comments) => {
   return comments.map((comment) => {
-    const {emotion, date, author, message} = comment;
+    const {id, emotion, date, author, message} = comment;
     return (
-      `<li class="film-details__comment">
+      `<li class="film-details__comment" id="${id}">
                 <span class="film-details__comment-emoji">
                   <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
                 </span>
