@@ -1,6 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import CommentsComponent from "./comments";
 import {formatCommentsDate} from "../utils/common";
+import {encode} from 'he';
 
 const createGenreMarkup = (genres) => {
   return genres.map((genre) => {
@@ -159,7 +160,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   dataComment() {
-    const message = this._element.querySelector(`.film-details__comment-input`).value;
+    const message = encode(this._element.querySelector(`.film-details__comment-input`).value);
     const emotion = this._nameEmoji ? this._nameEmoji : ``;
 
     if (!emotion || !message) {

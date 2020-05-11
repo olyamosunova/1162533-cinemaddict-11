@@ -1,9 +1,13 @@
 import {EMOTIONS} from "../const";
 import AbstractSmartComponent from "./abstract-smart-component";
+import {encode} from 'he';
 
 const createCommentMarkup = (comments) => {
   return comments.map((comment) => {
-    const {id, emotion, date, author, message} = comment;
+    const {id, emotion, date, author, message: notSanitizedMessage} = comment;
+
+    const message = encode(notSanitizedMessage);
+
     return (
       `<li class="film-details__comment" id="${id}">
                 <span class="film-details__comment-emoji">
