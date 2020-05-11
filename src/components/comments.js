@@ -38,7 +38,7 @@ const createEmojiMarkup = (isChecked, nameEmoji) => {
 };
 
 const createCommentsTemplate = (comments, options) => {
-  const {isEmojiShowing, nameEmoji} = options;
+  const {isEmojiShowing, nameEmoji, commentText} = options;
 
   const commentsCount = comments.length;
   const commentMarkup = createCommentMarkup(comments);
@@ -66,7 +66,7 @@ const createCommentsTemplate = (comments, options) => {
             </div>
 
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentText ? commentText : ``}</textarea>
               </label>
 
               <div class="film-details__emoji-list">

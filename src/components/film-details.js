@@ -111,6 +111,7 @@ export default class FilmDetails extends AbstractSmartComponent {
 
     this._isEmojiShowing = null;
     this._nameEmoji = null;
+    this._commentText = null;
 
     this._addWatchButtonClickHandler = null;
     this._watchedButtonClickHandler = null;
@@ -126,11 +127,8 @@ export default class FilmDetails extends AbstractSmartComponent {
     return createFilmDetailsTemplate(this._film, {
       isEmojiShowing: this._isEmojiShowing,
       nameEmoji: this._nameEmoji,
+      commentText: this._commentText,
     });
-  }
-
-  removeElement() {
-    super.removeElement();
   }
 
   recoveryListeners() {
@@ -144,42 +142,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
-  setDeleteButtonClickHandler(handler) {
-    const deleteButton = this._element.querySelector(`.film-details__comment-delete`);
-    if (deleteButton) {
-      deleteButton.addEventListener(`click`, handler);
-    }
-
-    this._deleteButtonClickHandler = handler;
-  }
-
-  setSendCommentHandler(handler) {
-    const commentElement = this._element.querySelector(`.film-details__comment-input`);
-    commentElement.addEventListener(`keydown`, handler);
-    this._setCommentHandler = handler;
-  }
-
-  dataComment() {
-    const message = encode(this._element.querySelector(`.film-details__comment-input`).value);
-    const emotion = this._nameEmoji ? this._nameEmoji : ``;
-
-    if (!emotion || !message) {
-      return null;
-    }
-
-    const date = formatCommentsDate(new Date());
-    const id = String(new Date() + Math.random());
-    const author = `user`;
-
-    return {
-      message,
-      emotion,
-      date,
-      id,
-      author,
-    };
-  }
-
   rerender() {
     super.rerender();
   }
@@ -187,6 +149,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   reset() {
     this._isEmojiShowing = null;
     this._nameEmoji = null;
+    this._commentText = null;
 
     this.rerender();
   }
@@ -219,13 +182,57 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._closeButtonClickHandler = handler;
   }
 
+  setDeleteButtonClickHandler(handler) {
+    const deleteButtonElements = this._element.querySelectorAll(`.film-details__comment-delete`);
+    if (deleteButtonElements) {
+      deleteButtonElements.forEach((btn) => btn.addEventListener(`click`, handler));
+    }
+
+    this._deleteButtonClickHandler = handler;
+  }
+
+  setSendCommentHandler(handler) {
+    const commentElement = this._element.querySelector(`.film-details__comment-input`);
+    commentElement.addEventListener(`keydown`, handler);
+    this._setCommentHandler = handler;
+  }
+
+  dataComment() {
+    const message = encode(this._element.querySelector(`.film-details__comment-input`).value);
+    const emotion = this._nameEmoji ? this._nameEmoji : ``;
+
+    if (!emotion || !message) {
+      return null;
+    }
+
+    const date = formatCommentsDate(new Date());
+    const id = String(new Date() + Math.random());
+    const author = `user`;
+
+    return {
+      message,
+      emotion,
+      date,
+      id,
+      author,
+    };
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
+
+    let message = ``;
+
+    this._element.querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, (evt) => {
+        message = encode(evt.target.value);
+      });
 
     element.querySelector(`.film-details__emoji-list`)
       .addEventListener(`change`, (evt) => {
         this._isEmojiShowing = true;
         this._nameEmoji = evt.target.value;
+        this._commentText = message;
 
         this.rerender();
       });
