@@ -195,5 +195,6 @@ export default class PageController {
 
   _onFilterChange() {
     this._updateMovies(SHOWING_MOVIES_COUNT_ON_START);
+    this._sortComponent.reset();
   }
 }
