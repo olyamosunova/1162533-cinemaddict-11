@@ -8,11 +8,11 @@ export const Mode = {
   POPUP_OPENED: `popup-opened`,
 };
 
-
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, onPopupDataChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onPopupDataChange = onPopupDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
 
@@ -23,6 +23,7 @@ export default class MovieController {
   }
 
   render(film, mode) {
+    this._film = film;
     this._mode = mode;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
@@ -65,32 +66,33 @@ export default class MovieController {
     });
 
     this._filmDetailsComponent.setAddWatchButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isAddWatchlist: !film.isAddWatchlist,
+      this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
+        isAddWatchlist: !this._film.isAddWatchlist,
       }));
     });
 
     this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isAlreadyWatched: !film.isAlreadyWatched,
+      this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
+        isAlreadyWatched: !this._film.isAlreadyWatched,
       }));
     });
 
     this._filmDetailsComponent.setFavoritesButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isAddFavorites: !film.isAddFavorites,
+      this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
+        isAddFavorites: !this._film.isAddFavorites,
       }));
     });
 
-    this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
+    this._filmDetailsComponent.setDeleteCommentButtonClickHandler((evt) => {
       evt.preventDefault();
 
       const deleteButton = evt.target;
       const commentElement = deleteButton.closest(`.film-details__comment`);
-      const deleteCommentId = commentElement.id;
-      const comments = film.comments.filter((comment) => comment.id !== deleteCommentId);
 
-      this._onDataChange(this, film, Object.assign(film, {comments}));
+      const deleteCommentId = commentElement.id;
+      const comments = this._film.comments.filter((comment) => comment.id !== deleteCommentId);
+
+      this._onPopupDataChange(this, this._film, Object.assign(this._film, {comments}));
     });
 
     this._filmDetailsComponent.setSendCommentHandler((evt) => {
@@ -102,8 +104,8 @@ export default class MovieController {
           return;
         }
 
-        const newComments = film.comments.concat(comment);
-        this._onDataChange(this, film, Object.assign(film, {comments: newComments}));
+        const newComments = this._film.comments.concat(comment);
+        this._onPopupDataChange(this, this._film, Object.assign(this._film, {comments: newComments}));
       }
     });
 
@@ -132,6 +134,12 @@ export default class MovieController {
     remove(this._filmDetailsComponent);
     this._filmDetailsComponent.reset();
     this._mode = Mode.DEFAULT;
+
+    this._onDataChange(this, this._film, Object.assign({}, this._film, {
+      isAddWatchlist: this._film.isAddWatchlist,
+      isAlreadyWatched: this._film.isAlreadyWatched,
+      isAddFavorites: this._film.isAddFavorites,
+    }));
   }
 
   _openPopupElement() {

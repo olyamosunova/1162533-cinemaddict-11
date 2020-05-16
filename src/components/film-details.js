@@ -136,7 +136,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setAddWatchButtonClickHandler(this._addWatchButtonClickHandler);
     this.setWatchedButtonClickHandler(this._watchedButtonClickHandler);
     this.setFavoritesButtonClickHandler(this._favoritesButtonClickHandler);
-    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setDeleteCommentButtonClickHandler(this._deleteButtonClickHandler);
     this.setSendCommentHandler(this._setCommentHandler);
 
     this._subscribeOnEvents();
@@ -182,7 +182,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._closeButtonClickHandler = handler;
   }
 
-  setDeleteButtonClickHandler(handler) {
+  setDeleteCommentButtonClickHandler(handler) {
     const deleteButtonElements = this._element.querySelectorAll(`.film-details__comment-delete`);
     if (deleteButtonElements) {
       deleteButtonElements.forEach((btn) => btn.addEventListener(`click`, handler));
