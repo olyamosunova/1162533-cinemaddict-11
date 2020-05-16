@@ -92,7 +92,7 @@ export default class PageController {
     const newMovies = renderMovies(filmContainerElement, movies, this._onDataChange, this._onViewChange);
     this._showedFilmControllers = this._showedFilmControllers.concat(newMovies);
 
-    this._showingMoviesCount = this._showedFilmControllers.length;
+    // this._showingMoviesCount = this._showedFilmControllers.length;
   }
 
   _renderShowMoreButton() {
@@ -140,6 +140,7 @@ export default class PageController {
   }
 
   _updateMovies(count) {
+    this._showingMoviesCount = count;
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, count));
     this._renderShowMoreButton();
