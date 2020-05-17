@@ -1,5 +1,5 @@
-import {formatMovieDuration, getRandomDate,
-  getRandomArrayItem, getRandomIntegerNumber, formatDate} from '../utils/common';
+import {formatMovieDuration, getRandomDate, getRandomWatchedMovieDate,
+  getRandomArrayItem, getRandomIntegerNumber, formatDate, getUniqueItems} from '../utils/common';
 import {TimeToken, PROBABILITY, TITLES, POSTERS,
   ATHORS, DESCRIPTIONS, GENRES, COUNTRIES} from "../const";
 import {generateComments} from "./comment";
@@ -23,6 +23,8 @@ const generateGenre = () => {
 
 const generateFilm = () => {
   const dueDate = getRandomDate();
+  const isAlreadyWatched = Math.random() > PROBABILITY;
+  const watchingDate = isAlreadyWatched ? getRandomWatchedMovieDate() : null;
   return {
     id: String(new Date() + Math.random()),
     fullDate: dueDate,
@@ -34,8 +36,9 @@ const generateFilm = () => {
     year: formatDate(dueDate, TimeToken.YEAR),
     duration: formatMovieDuration(getRandomIntegerNumber(30, 360)),
     isAddWatchlist: Math.random() > PROBABILITY,
-    isAlreadyWatched: Math.random() > PROBABILITY,
+    isAlreadyWatched,
     isAddFavorites: Math.random() > PROBABILITY,
+    watchingDate,
     originTitle: getRandomArrayItem(TITLES),
     director: getRandomArrayItem(ATHORS),
     writers: ATHORS,
@@ -43,7 +46,7 @@ const generateFilm = () => {
     releaseDate: formatDate(dueDate, TimeToken.DATE),
     country: getRandomArrayItem(COUNTRIES),
     age: getRandomIntegerNumber(0, 18),
-    allGenres: generateGenre(),
+    allGenres: getUniqueItems(generateGenre()),
   };
 };
 

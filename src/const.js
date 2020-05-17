@@ -51,5 +51,24 @@ const FilterType = {
   FAVORITES: `Favorites`,
 };
 
-export {RenderPosition, TimeToken, FilterType,
+const RANK = {
+  novice: {
+    rank: `novice`,
+    minCount: 1,
+    maxCount: 10,
+  },
+  fan: {
+    rank: `fan`,
+    minCount: 11,
+    maxCount: 20,
+  },
+  movieBuff: {
+    rank: `movie buff`,
+    minCount: 21,
+    maxCount: Infinity,
+  },
+};
+
+
+export {RenderPosition, TimeToken, FilterType, RANK,
   PROBABILITY, TITLES, POSTERS, ATHORS, DESCRIPTIONS, EMOTIONS, COMMENTS, GENRES, COUNTRIES};

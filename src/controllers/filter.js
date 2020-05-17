@@ -3,6 +3,14 @@ import {FilterType, RenderPosition} from '../const';
 import {render, replace} from '../utils/render';
 import {getMoviesByFilter} from '../utils/filter.js';
 
+export const MenuItem = {
+  MOVIES: `All movies`,
+  // WATCHLIST: `Watchlist`,
+  // HISTORY: `History`,
+  // FAVORITES: `Favorites`,
+  STATISTICS: `stats`,
+};
+
 export default class FilterController {
   constructor(container, moviesModel) {
     this._container = container;
@@ -48,5 +56,25 @@ export default class FilterController {
 
   _onDataChange() {
     this.render();
+  }
+
+  setOnChange(handler) {
+    this._filterComponent.getElement().addEventListener(`click`, (evt) => {
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const menuItem = evt.target.dataset.filterName;
+
+      const navigationItemElements = this._filterComponent.getElement().querySelectorAll(`a`);
+
+      navigationItemElements.forEach((navigationItem) => {
+        navigationItem.classList.remove(`main-navigation__item--active`);
+      });
+
+      evt.target.classList.add(`main-navigation__item--active`);
+
+      handler(menuItem);
+    });
   }
 }
