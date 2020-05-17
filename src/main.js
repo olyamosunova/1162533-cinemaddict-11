@@ -1,8 +1,9 @@
 import ProfileComponent from "./components/profile";
-import FilterController from "./controllers/filter";
+import FilterController, {MenuItem} from "./controllers/filter";
 import FilmsComponent from "./components/films";
 import FilmsCountComponent from "./components/films-count";
 import PageController from "./controllers/page-controller";
+import StatisticsComponent from "./components/statistics";
 import MoviesModel from "./models/movies";
 import {generateFilms} from "./mock/film";
 import {RenderPosition} from "./const";
@@ -30,3 +31,21 @@ render(siteMainElement, filmsComponent, RenderPosition.BEFOREND);
 const pageController = new PageController(filmsComponent, moviesModel);
 
 pageController.render(films);
+
+const statisticsComponent = new StatisticsComponent(moviesModel);
+render(siteMainElement, statisticsComponent, RenderPosition.BEFOREND);
+statisticsComponent.hide();
+
+filterController.setOnChange((menuItem) => {
+  switch (menuItem) {
+    case MenuItem.MOVIES:
+      statisticsComponent.hide();
+      pageController.show();
+      pageController.render(films);
+      break;
+    case MenuItem.STATISTICS:
+      pageController.hide();
+      statisticsComponent.show();
+      break;
+  }
+});
