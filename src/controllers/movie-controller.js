@@ -52,6 +52,7 @@ export default class MovieController {
     this._filmCardComponent.setWatchedButtonClickHandler(() => {
       this._onDataChange(this, film, Object.assign({}, film, {
         isAlreadyWatched: !film.isAlreadyWatched,
+        watchingDate: new Date(),
       }));
     });
 
@@ -74,6 +75,7 @@ export default class MovieController {
     this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
       this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
         isAlreadyWatched: !this._film.isAlreadyWatched,
+        watchingDate: new Date(),
       }));
     });
 
@@ -139,6 +141,7 @@ export default class MovieController {
       isAddWatchlist: this._film.isAddWatchlist,
       isAlreadyWatched: this._film.isAlreadyWatched,
       isAddFavorites: this._film.isAddFavorites,
+      watchingDate: this._film.watchingDate,
     }));
   }
 

@@ -7,6 +7,34 @@ import moment from "moment";
 
 const SECOND = 60;
 
+const FILTERS_FOR_STATISTICS = [
+  {
+    name: `all-time`,
+    label: `All time`,
+    period: 0,
+  },
+  {
+    name: `today`,
+    label: `Today`,
+    period: 1,
+  },
+  {
+    name: `week`,
+    label: `Week`,
+    period: 7,
+  },
+  {
+    name: `month`,
+    label: `Month`,
+    period: 30,
+  },
+  {
+    name: `year`,
+    label: `Year`,
+    period: 365,
+  },
+];
+
 const getTotalDurationStatistics = (movies) => {
   const totalDuration = movies.reduce((result, movie) => {
     const to = movie.duration.search(`h`);
@@ -25,7 +53,6 @@ const getTotalDurationStatistics = (movies) => {
 
 const getGenresAll = (movies) => {
   const allGenres = {};
-  // console.log('movies', movies);
 
   movies.forEach((movie) => {
     movie.allGenres.forEach((genre = ``) => {
@@ -35,7 +62,6 @@ const getGenresAll = (movies) => {
       }
       allGenres[genre] = 1;
     });
-    console.log(moment(movie.watchingDate).fromNow(), new Date());
   });
 
   return allGenres;
@@ -55,8 +81,22 @@ const getTopGenre = (genres) => {
   return genre;
 };
 
+const getMoviesForPeriod = (movies, period) => {
+
+  if (period === 0) {
+    return movies;
+  }
+
+  const periodDate = new Date();
+  periodDate.setDate(periodDate.getDate() - period);
+
+  const films = movies.slice().filter((movie) => movie.watchingDate.getTime() >= periodDate.getTime());
+  console.log(movies, films);
+  return films;
+};
+
 const renderGenreChart = (statisticCtx, movies) => {
-  const genres = getGenresAll(getHistoryMovies(movies));
+  const genres = getGenresAll(movies);
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -116,14 +156,24 @@ const renderGenreChart = (statisticCtx, movies) => {
   });
 };
 
-const createStatisticsTemplate = (movies) => {
+const createFiltersInputMarkup = (activeFilter) => {
+  return FILTERS_FOR_STATISTICS.map((filter) => {
+    const checked = filter.name === activeFilter;
+    return (
+      `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${filter.name}" value="${filter.name}" ${checked ? `checked` : ``}>
+       <label for="statistic-${filter.name}" class="statistic__filters-label">${filter.label}</label>`
+    );
+  }).join(`\n`);
+};
 
-  const watchedMovies = getHistoryMovies(movies);
+const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
+  const watchedMovies = getHistoryMovies(filmsForPeriod);
   const countMovies = watchedMovies.length;
   const rank = getUserRank(movies)[0].rank;
   const duration = getTotalDurationStatistics(watchedMovies);
   const {hours, minutes} = duration;
   const genres = getTopGenre(getGenresAll(watchedMovies));
+  const filterInput = createFiltersInputMarkup(activeFilter);
 
   return (
     `<section class="statistic">
@@ -136,20 +186,7 @@ const createStatisticsTemplate = (movies) => {
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-      <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-      <label for="statistic-today" class="statistic__filters-label">Today</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-      <label for="statistic-week" class="statistic__filters-label">Week</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-      <label for="statistic-month" class="statistic__filters-label">Month</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-      <label for="statistic-year" class="statistic__filters-label">Year</label>
+      ${filterInput}
     </form>
 
     <ul class="statistic__text-list">
@@ -181,17 +218,30 @@ export default class Statistics extends AbstractSmartComponent {
     this._moviesModel = moviesModel;
     this._movies = this._moviesModel.getMoviesAll();
 
-    this._chart = null;
+    this._activeFilter = FILTERS_FOR_STATISTICS[FILTERS_FOR_STATISTICS.findIndex(
+      (filter) => filter.name === `all-time`)];
 
-    this._renderChart();
+    this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
+
+    this._chart = null;
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._movies);
+    console.log(this._activeFilter.name);
+    return createStatisticsTemplate(this._movies, this._films, this._activeFilter.name);
+  }
+
+  recoveryListeners() {
+    this.setFilterStatisticsChangeHandler();
   }
 
   show() {
     super.show();
+  }
+
+  render() {
+    this._renderChart();
+    this.setFilterStatisticsChangeHandler();
   }
 
   rerender() {
@@ -204,6 +254,24 @@ export default class Statistics extends AbstractSmartComponent {
     const element = this.getElement();
     const statisticCtx = element.querySelector(`.statistic__chart`);
 
-    this._chart = renderGenreChart(statisticCtx, this._movies);
+    this._chart = renderGenreChart(statisticCtx, this._films);
+  }
+
+  setFilterStatisticsChangeHandler() {
+    this.getElement().addEventListener(`change`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+
+      const statisticsFilterName = evt.target.value;
+      const index = FILTERS_FOR_STATISTICS.findIndex(
+        (filter) => filter.name === statisticsFilterName);
+      this._activeFilter = FILTERS_FOR_STATISTICS[index];
+
+      this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
+      this.rerender();
+    });
   }
 }

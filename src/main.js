@@ -46,6 +46,7 @@ filterController.setOnChange((menuItem) => {
     case MenuItem.STATISTICS:
       pageController.hide();
       statisticsComponent.show();
+      statisticsComponent.render();
       break;
   }
 });

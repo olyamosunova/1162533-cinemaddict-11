@@ -66,6 +66,8 @@ export default class FilterController {
 
       const menuItem = evt.target.dataset.filterName;
 
+      console.log(menuItem);
+
       const navigationItemElements = this._filterComponent.getElement().querySelectorAll(`a`);
 
       navigationItemElements.forEach((navigationItem) => {
