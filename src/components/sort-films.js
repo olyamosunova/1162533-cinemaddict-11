@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component";
+import AbstractSmartComponent from "./abstract-smart-component";
 
 // Сортировка работает в одном направлении — от максимального к минимальному:
 //  при сортировке по дате выхода в начале списка будут самые новые фильмы,
@@ -20,11 +20,12 @@ const createSortFilmsTemplate = () => {
   );
 };
 
-export default class SortFilms extends AbstractComponent {
+export default class SortFilms extends AbstractSmartComponent {
   constructor() {
     super();
 
     this._currentSortType = SortType.DEFAULT;
+    this._sortTypeChangeHandler = null;
   }
 
   getTemplate() {
@@ -33,6 +34,19 @@ export default class SortFilms extends AbstractComponent {
 
   getSortType() {
     return this._currentSortType;
+  }
+
+  recoveryListeners() {
+    this.setSortTypeChangeHandler(this._sortTypeChangeHandler);
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  reset() {
+    this._currentSortType = SortType.DEFAULT;
+    this.rerender();
   }
 
   setSortTypeChangeHandler(handler) {
@@ -60,5 +74,7 @@ export default class SortFilms extends AbstractComponent {
 
       handler(this._currentSortType);
     });
+
+    this._sortTypeChangeHandler = handler;
   }
 }
