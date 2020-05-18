@@ -1,23 +1,18 @@
 import FilterComponent from '../components/filter';
 import {FilterType, RenderPosition} from '../const';
-import {render, replace} from '../utils/render';
+import {remove, render, replace} from '../utils/render';
 import {getMoviesByFilter} from '../utils/filter.js';
-
-export const MenuItem = {
-  MOVIES: `All movies`,
-  // WATCHLIST: `Watchlist`,
-  // HISTORY: `History`,
-  // FAVORITES: `Favorites`,
-  STATISTICS: `stats`,
-};
+import StatisticsComponent from "../components/statistics";
 
 export default class FilterController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, pageController) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._pageController = pageController;
 
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
+    this._statisticsComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -45,38 +40,30 @@ export default class FilterController {
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.BEFOREND);
+      render(container, this._filterComponent, RenderPosition.AFTERBEGIN);
     }
+
+    this._statisticsComponent = new StatisticsComponent(this._moviesModel);
+    render(this._container, this._statisticsComponent, RenderPosition.BEFOREND);
+    this._statisticsComponent.setFilterStatisticsChangeHandler();
+    this._statisticsComponent.hide();
+    this._statisticsComponent.render();
   }
 
   _onFilterChange(filterType) {
-    this._moviesModel.setFilter(filterType);
-    this._activeFilterType = filterType;
+    if (filterType === `stats`) {
+      this._pageController.hide();
+      this._statisticsComponent.show();
+    } else {
+      this._pageController.show();
+      this._statisticsComponent.hide();
+      this._moviesModel.setFilter(filterType);
+      this._activeFilterType = filterType;
+    }
   }
 
   _onDataChange() {
+    remove(this._statisticsComponent);
     this.render();
-  }
-
-  setOnChange(handler) {
-    this._filterComponent.getElement().addEventListener(`click`, (evt) => {
-      if (evt.target.tagName !== `A`) {
-        return;
-      }
-
-      const menuItem = evt.target.dataset.filterName;
-
-      console.log(menuItem);
-
-      const navigationItemElements = this._filterComponent.getElement().querySelectorAll(`a`);
-
-      navigationItemElements.forEach((navigationItem) => {
-        navigationItem.classList.remove(`main-navigation__item--active`);
-      });
-
-      evt.target.classList.add(`main-navigation__item--active`);
-
-      handler(menuItem);
-    });
   }
 }

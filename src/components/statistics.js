@@ -3,7 +3,6 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getHistoryMovies} from "../utils/filter";
 import {getUserRank} from "../utils/common";
-import moment from "moment";
 
 const SECOND = 60;
 
@@ -52,6 +51,10 @@ const getTotalDurationStatistics = (movies) => {
 };
 
 const getGenresAll = (movies) => {
+  if (movies.length === 0) {
+    return movies;
+  }
+
   const allGenres = {};
 
   movies.forEach((movie) => {
@@ -68,9 +71,13 @@ const getGenresAll = (movies) => {
 };
 
 const getTopGenre = (genres) => {
+  if (!genres) {
+    return false;
+  }
+
   const genresKeys = Object.keys(genres);
   let maxWatchedGenreCount = 0;
-  let genre = `-`;
+  let genre = ``;
 
   genresKeys.forEach((genreName) => {
     if (maxWatchedGenreCount < genres[genreName]) {
@@ -91,7 +98,6 @@ const getMoviesForPeriod = (movies, period) => {
   periodDate.setDate(periodDate.getDate() - period);
 
   const films = movies.slice().filter((movie) => movie.watchingDate.getTime() >= periodDate.getTime());
-  console.log(movies, films);
   return films;
 };
 
@@ -117,8 +123,8 @@ const renderGenreChart = (statisticCtx, movies) => {
             size: 20
           },
           color: `#ffffff`,
-          anchor: 'start',
-          align: 'start',
+          anchor: `start`,
+          align: `start`,
           offset: 40,
         }
       },
@@ -172,7 +178,7 @@ const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
   const rank = getUserRank(movies)[0].rank;
   const duration = getTotalDurationStatistics(watchedMovies);
   const {hours, minutes} = duration;
-  const genres = getTopGenre(getGenresAll(watchedMovies));
+  const genre = getTopGenre(getGenresAll(watchedMovies));
   const filterInput = createFiltersInputMarkup(activeFilter);
 
   return (
@@ -185,7 +191,6 @@ const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
-
       ${filterInput}
     </form>
 
@@ -200,7 +205,7 @@ const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">${genres}</p>
+        <p class="statistic__item-text">${genre ? genre : ``}</p>
       </li>
     </ul>
 
@@ -218,8 +223,8 @@ export default class Statistics extends AbstractSmartComponent {
     this._moviesModel = moviesModel;
     this._movies = this._moviesModel.getMoviesAll();
 
-    this._activeFilter = FILTERS_FOR_STATISTICS[FILTERS_FOR_STATISTICS.findIndex(
-      (filter) => filter.name === `all-time`)];
+    this._activeFilter = FILTERS_FOR_STATISTICS[FILTERS_FOR_STATISTICS
+      .findIndex((filter) => filter.name === `all-time`)];
 
     this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
 
@@ -227,7 +232,6 @@ export default class Statistics extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    console.log(this._activeFilter.name);
     return createStatisticsTemplate(this._movies, this._films, this._activeFilter.name);
   }
 
@@ -254,24 +258,26 @@ export default class Statistics extends AbstractSmartComponent {
     const element = this.getElement();
     const statisticCtx = element.querySelector(`.statistic__chart`);
 
-    this._chart = renderGenreChart(statisticCtx, this._films);
+    if (this._films.length !== 0) {
+      this._chart = renderGenreChart(statisticCtx, this._films);
+    }
   }
 
   setFilterStatisticsChangeHandler() {
-    this.getElement().addEventListener(`change`, (evt) => {
-      evt.preventDefault();
+    this.getElement().querySelector(`.statistic__filters`)
+      .addEventListener(`change`, (evt) => {
+        evt.preventDefault();
+        if (evt.target.tagName !== `INPUT`) {
+          return;
+        }
 
-      if (evt.target.tagName !== `INPUT`) {
-        return;
-      }
+        const statisticsFilterName = evt.target.value;
+        const index = FILTERS_FOR_STATISTICS
+          .findIndex((filter) => filter.name === statisticsFilterName);
+        this._activeFilter = FILTERS_FOR_STATISTICS[index];
 
-      const statisticsFilterName = evt.target.value;
-      const index = FILTERS_FOR_STATISTICS.findIndex(
-        (filter) => filter.name === statisticsFilterName);
-      this._activeFilter = FILTERS_FOR_STATISTICS[index];
-
-      this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
-      this.rerender();
-    });
+        this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
+        this.rerender();
+      });
   }
 }
