@@ -21,12 +21,11 @@ moviesModel.setMovies(films);
 render(siteHeaderElement, new ProfileComponent(films), RenderPosition.BEFOREND);
 render(siteFooterElement, new FilmsCountComponent(`130 291`), RenderPosition.BEFOREND);
 
-const filterController = new FilterController(siteMainElement, moviesModel);
-filterController.render();
-
 const filmsComponent = new FilmsComponent();
 render(siteMainElement, filmsComponent, RenderPosition.BEFOREND);
 
 const pageController = new PageController(filmsComponent, moviesModel);
-
 pageController.render(films);
+
+const filterController = new FilterController(siteMainElement, moviesModel, pageController);
+filterController.render();

@@ -1,6 +1,7 @@
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
-import {TimeToken} from "../const";
+import {TimeToken, RANK} from "../const";
+import {getHistoryMovies} from "./filter";
 
 momentDurationFormatSetup(moment);
 
@@ -37,4 +38,36 @@ const getRandomDate = () => {
   return targetDate;
 };
 
-export {formatMovieDuration, formatDate, formatCommentsDate, getRandomArrayItem, getRandomIntegerNumber, getRandomDate};
+const getRandomWatchedMovieDate = () => {
+  // создаем дату Thu Apr 09 2020 20:50:20 GMT+0200 (Центральная Африка)
+  const targetDate = new Date();
+  // рандомно вычисляем количество дней, которое будем вычитать (в пределах 1 года ~ 365 дней)
+  const diffValue = getRandomIntegerNumber(0, 365);
+  // конечная рандомная дата
+  targetDate.setDate(targetDate.getDate() - diffValue);
+
+  return targetDate;
+};
+
+const getUserRank = (movies) => {
+  const countFilms = getHistoryMovies(movies).length;
+  const ranks = Object.values(RANK);
+  const userRank = ranks.filter(({minCount, maxCount, rank}) => (countFilms >= minCount && countFilms <= maxCount) ? rank : ``);
+
+  return userRank;
+};
+
+const getUniqueItems = (items) => {
+  let result = [];
+
+  for (let str of items) {
+    if (!result.includes(str)) {
+      result.push(str);
+    }
+  }
+
+  return result;
+};
+
+export {formatMovieDuration, formatDate, formatCommentsDate, getRandomArrayItem, getUniqueItems,
+  getRandomIntegerNumber, getRandomDate, getUserRank, getRandomWatchedMovieDate};

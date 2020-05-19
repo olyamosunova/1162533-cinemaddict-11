@@ -1,23 +1,5 @@
 import AbstractComponent from "./abstract-component";
-import {getHistoryMovies} from "../utils/filter";
-
-const RANK = {
-  novice: {
-    rank: `novice`,
-    minCount: 1,
-    maxCount: 10,
-  },
-  fan: {
-    rank: `fan`,
-    minCount: 11,
-    maxCount: 20,
-  },
-  movieBuff: {
-    rank: `movie buff`,
-    minCount: 21,
-    maxCount: Infinity,
-  },
-};
+import {getUserRank} from "../utils/common";
 
 export const createProfileTemplate = (rank) => {
   return (
@@ -35,14 +17,6 @@ export default class Profile extends AbstractComponent {
   }
 
   getTemplate() {
-    return createProfileTemplate(this.getUserRank());
-  }
-
-  getUserRank() {
-    const countFilms = getHistoryMovies(this._movies).length;
-    const ranks = Object.values(RANK);
-    const userRank = ranks.filter(({minCount, maxCount, rank}) => (countFilms >= minCount && countFilms <= maxCount) ? rank : ``);
-
-    return userRank;
+    return createProfileTemplate(getUserRank(this._movies));
   }
 }
