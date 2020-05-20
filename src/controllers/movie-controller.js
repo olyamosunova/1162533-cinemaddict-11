@@ -9,12 +9,13 @@ export const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange, onPopupDataChange) {
+  constructor(container, onDataChange, onViewChange, onPopupDataChange, api) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onPopupDataChange = onPopupDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
+    this._api = api;
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
@@ -29,7 +30,7 @@ export default class MovieController {
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film);
+    this._filmDetailsComponent = new FilmDetailsComponent(film, this._api);
 
     this._filmCardComponent.setPosterClickHandler(() => {
       this._openPopupElement();

@@ -4,9 +4,9 @@ import {encode} from 'he';
 
 const createCommentMarkup = (comments) => {
   return comments.map((comment) => {
-    const {id, emotion, date, author, message: notSanitizedMessage} = comment;
+    const {id, emotion, date, author, message} = comment;
 
-    const message = encode(notSanitizedMessage);
+    // const message = encode(notSanitizedMessage);
 
     return (
       `<li class="film-details__comment" id="${id}">
@@ -37,11 +37,11 @@ const createEmojiMarkup = (isChecked, nameEmoji) => {
   }).join(`\n`);
 };
 
-const createCommentsTemplate = (comments, options) => {
-  const {isEmojiShowing, nameEmoji, commentText} = options;
+const createCommentsTemplate = (options) => {
+  const {isEmojiShowing, nameEmoji, commentText, comments} = options;
 
-  const commentsCount = comments.length;
-  const commentMarkup = createCommentMarkup(comments);
+  const commentsCount = comments ? comments.length : ``;
+  const commentMarkup = commentsCount ? createCommentMarkup(comments) : ``;
   const emotionMarkup = createEmojiMarkup(isEmojiShowing, nameEmoji);
 
   return (
@@ -79,14 +79,12 @@ const createCommentsTemplate = (comments, options) => {
 };
 
 export default class Comments extends AbstractSmartComponent {
-  constructor(comments, options) {
+  constructor(options) {
     super();
-
-    this._comments = comments;
     this._options = options;
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._comments, this._options);
+    return createCommentsTemplate(this._options);
   }
 }
