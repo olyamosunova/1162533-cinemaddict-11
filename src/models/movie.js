@@ -19,10 +19,12 @@ export default class Movie {
     this.director = data.film_info[`director`];
     this.writers = data.film_info[`writers`];
     this.actors = data.film_info[`actors`];
-    this.releaseDate = new Date(data.film_info.release[`date`]);
+    this.releaseDate = formatDate(new Date(data.film_info.release[`date`]), TimeToken.DATE);
     this.country = data.film_info.release[`release_country`];
     this.age = data.film_info[`age_rating`];
     this.allGenres = data.film_info[`genre`];
+
+    console.log(this.allGenres);
   }
 
   toRAW() {

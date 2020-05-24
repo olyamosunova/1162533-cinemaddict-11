@@ -3,8 +3,9 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import {encode} from 'he';
 
 const createCommentMarkup = (comments) => {
-  return comments.map((comment) => {
-    const {id, emotion, date, author, message} = comment;
+  return comments.map((message) => {
+    const {id, author, emotion, comment, date} = message;
+    // console.log(id);
 
     // const message = encode(notSanitizedMessage);
 
@@ -39,6 +40,7 @@ const createEmojiMarkup = (isChecked, nameEmoji) => {
 
 const createCommentsTemplate = (options) => {
   const {isEmojiShowing, nameEmoji, commentText, comments} = options;
+  console.log(comments);
 
   const commentsCount = comments ? comments.length : ``;
   const commentMarkup = commentsCount ? createCommentMarkup(comments) : ``;

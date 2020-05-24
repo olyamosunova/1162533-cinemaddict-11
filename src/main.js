@@ -8,7 +8,7 @@ import MoviesModel from "./models/movies";
 import {RenderPosition} from "./const";
 import {render} from "./utils/render";
 
-const AUTHORIZATION = `Basic n834svgsyfe7Fye`;
+const AUTHORIZATION = `Basic n834srgjsyfe7Fye`;
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
