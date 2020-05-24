@@ -2,6 +2,7 @@ import {remove, replace, render} from "../utils/render";
 import {RenderPosition} from "../const";
 import FilmDetailsComponent from "../components/film-details";
 import FilmCardComponent from "../components/film-card";
+import MovieModel from "../models/movie";
 
 export const Mode = {
   DEFAULT: `default`,
@@ -44,23 +45,31 @@ export default class MovieController {
       this._openPopupElement();
     });
 
-    this._filmCardComponent.setAddWatchButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isAddWatchlist: !film.isAddWatchlist,
-      }));
+    this._filmCardComponent.setAddWatchButtonClickHandler((evt) => {
+      evt.preventDefault();
+
+      const newMovie = MovieModel.clone(film);
+      newMovie.isAddWatchlist = !newMovie.isAddWatchlist;
+
+      this._onDataChange(this, film, newMovie);
     });
 
-    this._filmCardComponent.setWatchedButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isAlreadyWatched: !film.isAlreadyWatched,
-        watchingDate: new Date(),
-      }));
+    this._filmCardComponent.setWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+
+      const newMovie = MovieModel.clone(film);
+      newMovie.isAlreadyWatched = !newMovie.isAlreadyWatched;
+
+      this._onDataChange(this, film, newMovie);
     });
 
-    this._filmCardComponent.setFavoritesButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isAddFavorites: !film.isAddFavorites,
-      }));
+    this._filmCardComponent.setFavoritesButtonClickHandler((evt) => {
+      evt.preventDefault();
+
+      const newMovie = MovieModel.clone(film);
+      newMovie.isAddFavorites = !newMovie.isAddFavorites;
+
+      this._onDataChange(this, film, newMovie);
     });
 
     this._filmDetailsComponent.setCloseButtonClickHandler(() => {
