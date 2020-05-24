@@ -220,7 +220,6 @@ const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
 export default class Statistics extends AbstractSmartComponent {
   constructor(moviesModel) {
     super();
-    console.log(moviesModel);
     this._moviesModel = moviesModel;
     this._movies = this._moviesModel.getMoviesAll();
 

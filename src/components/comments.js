@@ -1,13 +1,14 @@
 import {EMOTIONS} from "../const";
 import AbstractSmartComponent from "./abstract-smart-component";
 import {encode} from 'he';
+import {formatCommentsDate} from "../utils/common";
 
 const createCommentMarkup = (comments) => {
-  return comments.map((message) => {
-    const {id, author, emotion, comment, date} = message;
-    // console.log(id);
+  return comments.map((commentItem) => {
+    const {id, author, emotion, comment: notSanitizedMessage, date} = commentItem;
+    const dateComment = formatCommentsDate(new Date(date));
 
-    // const message = encode(notSanitizedMessage);
+    const message = encode(notSanitizedMessage);
 
     return (
       `<li class="film-details__comment" id="${id}">
@@ -18,7 +19,7 @@ const createCommentMarkup = (comments) => {
                   <p class="film-details__comment-text">${message}</p>
                   <p class="film-details__comment-info">
                     <span class="film-details__comment-author">${author}</span>
-                    <span class="film-details__comment-day">${date}</span>
+                    <span class="film-details__comment-day">${dateComment}</span>
                     <button class="film-details__comment-delete">Delete</button>
                   </p>
                 </div>
@@ -38,9 +39,8 @@ const createEmojiMarkup = (isChecked, nameEmoji) => {
   }).join(`\n`);
 };
 
-const createCommentsTemplate = (options) => {
-  const {isEmojiShowing, nameEmoji, commentText, comments} = options;
-  console.log(comments);
+const createCommentsTemplate = (comments, options) => {
+  const {isEmojiShowing, nameEmoji, commentText} = options;
 
   const commentsCount = comments ? comments.length : ``;
   const commentMarkup = commentsCount ? createCommentMarkup(comments) : ``;
@@ -81,12 +81,13 @@ const createCommentsTemplate = (options) => {
 };
 
 export default class Comments extends AbstractSmartComponent {
-  constructor(options) {
+  constructor(comments, options) {
     super();
+    this._comments = comments;
     this._options = options;
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._options);
+    return createCommentsTemplate(this._comments, this._options);
   }
 }

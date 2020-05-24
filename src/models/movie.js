@@ -23,8 +23,6 @@ export default class Movie {
     this.country = data.film_info.release[`release_country`];
     this.age = data.film_info[`age_rating`];
     this.allGenres = data.film_info[`genre`];
-
-    console.log(this.allGenres);
   }
 
   toRAW() {

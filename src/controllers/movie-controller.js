@@ -30,7 +30,7 @@ export default class MovieController {
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film, this._api);
+    this._filmDetailsComponent = new FilmDetailsComponent(film);
 
     this._filmCardComponent.setPosterClickHandler(() => {
       this._openPopupElement();

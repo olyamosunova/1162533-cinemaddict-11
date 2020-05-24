@@ -14,10 +14,10 @@ const createGenreMarkup = (genres) => {
 const createFilmDetailsTemplate = (film, options) => {
   const {title, poster, description, rating, duration,
     isAddWatchlist, isAlreadyWatched, isAddFavorites, originTitle, director, writers,
-    actors, releaseDate, country, age, allGenres} = film;
+    actors, releaseDate, country, age, allGenres, comments} = film;
 
   const genreMarkup = createGenreMarkup(allGenres);
-  const commentsComponent = new CommentsComponent(options).getTemplate();
+  const commentsComponent = new CommentsComponent(comments, options).getTemplate();
 
   const addedButtonActiveClass = isAddWatchlist ? `checked` : ``;
   const watchedButtonActiveClass = isAlreadyWatched ? `checked` : ``;
@@ -105,17 +105,13 @@ const createFilmDetailsTemplate = (film, options) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(film, api) {
+  constructor(film) {
     super();
     this._film = film;
-    this._id = film.id;
-    this._api = api;
 
     this._isEmojiShowing = null;
     this._nameEmoji = null;
     this._commentText = null;
-    this._comments = null;
-    this._getComments();
 
     this._addWatchButtonClickHandler = null;
     this._watchedButtonClickHandler = null;
@@ -127,20 +123,11 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
-  _getComments() {
-    this._api.getComments(this._id)
-      .then((comments) => {
-        this._comments = comments;
-        this.rerender();
-      });
-  }
-
   getTemplate() {
     return createFilmDetailsTemplate(this._film, {
       isEmojiShowing: this._isEmojiShowing,
       nameEmoji: this._nameEmoji,
       commentText: this._commentText,
-      comments: this._comments,
     });
   }
 

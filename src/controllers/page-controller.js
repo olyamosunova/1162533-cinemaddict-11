@@ -5,7 +5,6 @@ import SortFilmsComponent, {SortType} from "../components/sort-films";
 import FilmsContainer from "../components/films-container";
 import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
-// import StatisticsComponent from "../components/statistics";
 
 const EXTRA_CARD_COUNT = 2;
 const SHOWING_MOVIES_COUNT_ON_START = 5;
@@ -13,8 +12,7 @@ const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
 
 const renderMovies = (filmsListElement, films, onDataChange, onViewChange, onPopupDataChange, api) => {
   return films.map((film) => {
-    const movieController = new MovieController(filmsListElement, onDataChange,
-      onViewChange, onPopupDataChange, api);
+    const movieController = new MovieController(filmsListElement, onDataChange, onViewChange, onPopupDataChange, api);
 
     movieController.render(film, MovieControllerMode);
 
@@ -55,7 +53,6 @@ export default class PageController {
     this._sortComponent = new SortFilmsComponent();
     this._topRatedComponent = new ExtraFilmsComponent(`Top rated`);
     this._mostCommentedComponent = new ExtraFilmsComponent(`Most Commented`);
-    // this._statisticsComponent = new StatisticsComponent(this._moviesModel);
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onPopupDataChange = this._onPopupDataChange.bind(this);
@@ -156,16 +153,15 @@ export default class PageController {
     this._renderMovies(this._moviesModel.getMovies().slice(0, count));
     this._renderShowMoreButton();
     this._rerenderExtraMovies();
-    // this._statisticsComponent.render();
   }
 
   _onDataChange(movieController, oldData, newData) {
     this._api.updateMovie(oldData.id, newData)
-      .then((taskModel) => {
-        const isSuccess = this._moviesModel.updateMovie(oldData.id, taskModel);
+      .then((moviesModel) => {
+        const isSuccess = this._moviesModel.updateMovie(oldData.id, moviesModel);
 
         if (isSuccess) {
-          movieController.render(taskModel, MovieControllerMode.DEFAULT);
+          movieController.render(moviesModel, MovieControllerMode.DEFAULT);
           this._updateMovies(this._showingMoviesCount);
         }
       });
