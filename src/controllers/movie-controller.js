@@ -31,7 +31,12 @@ export default class MovieController {
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film);
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film);
+
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._film.comments = comments;
+      });
 
     this._filmCardComponent.setPosterClickHandler(() => {
       this._openPopupElement();
@@ -56,9 +61,9 @@ export default class MovieController {
 
     this._filmCardComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
-
       const newMovie = MovieModel.clone(film);
       newMovie.isAlreadyWatched = !newMovie.isAlreadyWatched;
+      newMovie.watchingDate = newMovie.watchingDate ? null : new Date();
 
       this._onDataChange(this, film, newMovie);
     });
@@ -72,27 +77,26 @@ export default class MovieController {
       this._onDataChange(this, film, newMovie);
     });
 
-    this._filmDetailsComponent.setCloseButtonClickHandler(() => {
-      this._closePopupElement();
-    });
-
     this._filmDetailsComponent.setAddWatchButtonClickHandler(() => {
-      this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
-        isAddWatchlist: !this._film.isAddWatchlist,
-      }));
+      const newMovie = MovieModel.clone(film);
+      newMovie.isAddWatchlist = !newMovie.isAddWatchlist;
+
+      this._onPopupDataChange(this, film, newMovie);
     });
 
     this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
-      this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
-        isAlreadyWatched: !this._film.isAlreadyWatched,
-        watchingDate: new Date(),
-      }));
+      const newMovie = MovieModel.clone(film);
+      newMovie.isAlreadyWatched = !newMovie.isAlreadyWatched;
+      newMovie.watchingDate = newMovie.watchingDate ? null : new Date();
+
+      this._onPopupDataChange(this, film, newMovie);
     });
 
     this._filmDetailsComponent.setFavoritesButtonClickHandler(() => {
-      this._onPopupDataChange(this, this._film, Object.assign({}, this._film, {
-        isAddFavorites: !this._film.isAddFavorites,
-      }));
+      const newMovie = MovieModel.clone(film);
+      newMovie.isAddFavorites = !newMovie.isAddFavorites;
+
+      this._onPopupDataChange(this, film, newMovie);
     });
 
     this._filmDetailsComponent.setDeleteCommentButtonClickHandler((evt) => {
@@ -121,6 +125,10 @@ export default class MovieController {
       }
     });
 
+    this._filmDetailsComponent.setCloseButtonClickHandler(() => {
+      this._closePopupElement();
+    });
+
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
@@ -146,18 +154,12 @@ export default class MovieController {
     remove(this._filmDetailsComponent);
     this._filmDetailsComponent.reset();
     this._mode = Mode.DEFAULT;
-
-    this._onDataChange(this, this._film, Object.assign({}, this._film, {
-      isAddWatchlist: this._film.isAddWatchlist,
-      isAlreadyWatched: this._film.isAlreadyWatched,
-      isAddFavorites: this._film.isAddFavorites,
-      watchingDate: this._film.watchingDate,
-    }));
   }
 
   _openPopupElement() {
     this._onViewChange();
     const bodyElement = document.querySelector(`body`);
+
     render(bodyElement, this._filmDetailsComponent, RenderPosition.BEFOREND);
     this._mode = Mode.POPUP_OPENED;
 

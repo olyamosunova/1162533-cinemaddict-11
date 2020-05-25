@@ -159,7 +159,6 @@ export default class PageController {
     this._api.updateMovie(oldData.id, newData)
       .then((moviesModel) => {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, moviesModel);
-
         if (isSuccess) {
           movieController.render(moviesModel, MovieControllerMode.DEFAULT);
           this._updateMovies(this._showingMoviesCount);
@@ -168,12 +167,14 @@ export default class PageController {
   }
 
   _onPopupDataChange(movieController, oldData, newData) {
-    const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
-
-    if (isSuccess) {
-      movieController.render(newData);
-      this._rerenderExtraMovies();
-    }
+    this._api.updateMovie(oldData.id, newData)
+      .then((moviesModel) => {
+        const isSuccess = this._moviesModel.updateMovie(oldData.id, moviesModel);
+        if (isSuccess) {
+          movieController.render(moviesModel, MovieControllerMode.DEFAULT);
+          this._rerenderExtraMovies();
+        }
+      });
   }
 
   _onViewChange() {

@@ -1,4 +1,5 @@
 import Movie from "./models/movie";
+import Commen from "./models/comment.js";
 
 const Method = {
   GET: `GET`,
@@ -24,25 +25,23 @@ const API = class {
   getMovies() {
     return this._load({url: `movies`})
       .then((response) => response.json())
-      .then((movies) => Promise.all(movies.map((movie) => this._getComments(movie))))
       .then(Movie.parseMovies);
   }
 
-  _getComments(movie) {
-    return this._load({url: `comments/${movie.id}`})
+  getComments(movieId) {
+    return this._load({url: `comments/${movieId}`})
       .then((response) => response.json())
-      .then((commentsList) => Object.assign({}, movie, {comments: commentsList}));
+      .then(Commen.parseComments);
   }
 
   updateMovie(id, data) {
     return this._load({
       url: `movies/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(data),
+      body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then((movie) => this._getComments(movie))
       .then(Movie.parseMovie);
   }
 

@@ -10,6 +10,7 @@ export default class Movie {
     this.comments = data[`comments`] || ``;
     this.rating = data.film_info[`total_rating`];
     this.year = formatDate(new Date(data.film_info.release[`date`]), TimeToken.YEAR);
+    this.runtime = data.film_info[`runtime`];
     this.duration = formatMovieDuration(data.film_info[`runtime`]);
     this.isAddWatchlist = Boolean(data.user_details[`watchlist`]);
     this.isAlreadyWatched = Boolean(data.user_details[`already_watched`]);
@@ -19,14 +20,16 @@ export default class Movie {
     this.director = data.film_info[`director`];
     this.writers = data.film_info[`writers`];
     this.actors = data.film_info[`actors`];
+    this.release = new Date(data.film_info.release[`date`]);
     this.releaseDate = formatDate(new Date(data.film_info.release[`date`]), TimeToken.DATE);
     this.country = data.film_info.release[`release_country`];
     this.age = data.film_info[`age_rating`];
     this.allGenres = data.film_info[`genre`];
   }
 
-  toRAW() {
-    const comments = this.comments.map((comment) => comment.id);
+  toRAW(clone = false) {
+    const comments = clone ? this.comments.map(({id}) => id) : this.comments;
+    const watchingDate = this.watchingDate ? this.watchingDate : null;
 
     return {
       "id": this.id,
@@ -41,17 +44,17 @@ export default class Movie {
         "writers": this.writers,
         "actors": this.actors,
         "release": {
-          "date": this.releaseDate,
+          "date": this.release.toISOString(),
           "release_country": this.country
         },
-        "runtime": this.duration,
+        "runtime": this.runtime,
         "genre": this.allGenres,
         "description": this.description
       },
       "user_details": {
         "watchlist": this.isAddWatchlist,
         "already_watched": this.isAlreadyWatched,
-        "watching_date": this.watchingDate,
+        "watching_date": watchingDate,
         "favorite": this.isAddFavorites
       }
     };
@@ -66,6 +69,6 @@ export default class Movie {
   }
 
   static clone(data) {
-    return new Movie(data.toRAW());
+    return new Movie(data.toRAW(true));
   }
 }

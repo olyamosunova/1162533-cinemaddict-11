@@ -8,7 +8,7 @@ import MoviesModel from "./models/movies";
 import {RenderPosition} from "./const";
 import {render} from "./utils/render";
 
-const AUTHORIZATION = `Basic n8verbug67wegcbFye`;
+const AUTHORIZATION = `Basic n8vjdegwrgwrdrsgegcbFye`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
 const siteHeaderElement = document.querySelector(`.header`);
