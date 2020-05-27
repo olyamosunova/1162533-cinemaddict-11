@@ -1,5 +1,5 @@
 import Movie from "./models/movie";
-import Commen from "./models/comment.js";
+import Comment from "./models/comment.js";
 
 const Method = {
   GET: `GET`,
@@ -31,7 +31,18 @@ const API = class {
   getComments(movieId) {
     return this._load({url: `comments/${movieId}`})
       .then((response) => response.json())
-      .then(Commen.parseComments);
+      .then(Comment.parseComments);
+  }
+
+  createComment(movieId, comment) {
+    return this._load({
+      url: `comments/${movieId}`,
+      method: Method.POST,
+      body: JSON.stringify(comment.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Comment.parseComment);
   }
 
   updateMovie(id, data) {

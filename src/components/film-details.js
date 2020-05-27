@@ -197,10 +197,10 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   dataComment() {
-    const text = encode(this._element.querySelector(`.film-details__comment-input`).value);
+    const comment = encode(this._element.querySelector(`.film-details__comment-input`).value);
     const emotion = this._nameEmoji ? this._nameEmoji : ``;
 
-    if (!emotion || !text) {
+    if (!emotion || !comment) {
       return null;
     }
 
@@ -209,7 +209,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     const author = `user`;
 
     return {
-      text,
+      comment,
       emotion,
       date,
       id,

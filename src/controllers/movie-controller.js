@@ -3,6 +3,7 @@ import {RenderPosition} from "../const";
 import FilmDetailsComponent from "../components/film-details";
 import FilmCardComponent from "../components/film-card";
 import MovieModel from "../models/movie";
+import CommentModel from "../models/comment";
 
 export const Mode = {
   DEFAULT: `default`,
@@ -26,6 +27,7 @@ export default class MovieController {
 
   render(film, mode) {
     this._film = film;
+    this._movieId = this._film.id;
     this._mode = mode;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
@@ -114,14 +116,21 @@ export default class MovieController {
     this._filmDetailsComponent.setSendCommentHandler((evt) => {
       const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
       if (isCtrlAndEnter) {
-        const comment = this._filmDetailsComponent.dataComment();
+        const comment = new CommentModel(this._filmDetailsComponent.dataComment());
 
         if (!comment) {
           return;
         }
 
-        const newComments = this._film.comments.concat(comment);
-        this._onPopupDataChange(this, this._film, Object.assign(this._film, {comments: newComments}));
+        // const newComment = CommentModel.clone(comment);
+
+        this._api.createComment(this._movieId, comment)
+          .then((comments) => {
+            this._film.comments = comments;
+          });
+
+        // const newComments = this._film.comments.concat(comment);
+        // this._onPopupDataChange(this, this._film, Object.assign(this._film, {comments: newComments}));
       }
     });
 

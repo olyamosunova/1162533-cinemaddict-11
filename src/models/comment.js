@@ -1,13 +1,13 @@
 export default class Comment {
-  constructor(data) {
-    this.id = data[`id`];
-    this.author = data[`author`];
-    this.emotion = data[`emotion`];
-    this.text = data[`comment`];
-    this.date = new Date(data[`date`]);
+  constructor(comment) {
+    this.id = comment[`id`];
+    this.author = comment[`author`];
+    this.emotion = comment[`emotion`];
+    this.text = comment[`comment`];
+    this.date = new Date(comment[`date`]);
   }
 
-  toRaw() {
+  toRAW() {
     return {
       "comment": this.text,
       "date": this.date ? this.date.toISOString() : null,
