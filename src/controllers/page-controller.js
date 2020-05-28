@@ -5,6 +5,7 @@ import SortFilmsComponent, {SortType} from "../components/sort-films";
 import FilmsContainer from "../components/films-container";
 import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
+import ProfileComponent from "../components/profile";
 
 const EXTRA_CARD_COUNT = 2;
 const SHOWING_MOVIES_COUNT_ON_START = 5;
@@ -53,6 +54,7 @@ export default class PageController {
     this._sortComponent = new SortFilmsComponent();
     this._topRatedComponent = new ExtraFilmsComponent(`Top rated`);
     this._mostCommentedComponent = new ExtraFilmsComponent(`Most Commented`);
+    this._siteHeaderElement = document.querySelector(`.header`);
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -81,6 +83,9 @@ export default class PageController {
 
     render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
     render(filmListElement, this._filmsContainerComponent, RenderPosition.BEFOREND);
+
+    this._profileComponent = new ProfileComponent(movies);
+    render(this._siteHeaderElement, this._profileComponent, RenderPosition.BEFOREND);
 
     this._renderMovies(movies.slice(0, this._showingMoviesCount));
 
@@ -160,6 +165,10 @@ export default class PageController {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, moviesModel);
         if (isSuccess) {
           movieController.render(moviesModel, MovieControllerMode.DEFAULT);
+
+          remove(this._profileComponent);
+          this._profileComponent = new ProfileComponent(this._moviesModel.getMoviesAll());
+          render(this._siteHeaderElement, this._profileComponent, RenderPosition.BEFOREND);
         }
       })
       .catch(() => {

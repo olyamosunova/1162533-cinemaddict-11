@@ -1,5 +1,4 @@
 import API from "./api";
-import ProfileComponent from "./components/profile";
 import FilterController from "./controllers/filter";
 import FilmsComponent from "./components/films";
 import FilmsCountComponent from "./components/films-count";
@@ -11,7 +10,6 @@ import {render} from "./utils/render";
 const AUTHORIZATION = `Basic n8vjdegwrgwrdrsgegcbFye`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
-const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
@@ -29,7 +27,6 @@ api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(movies);
     pageController.render(movies);
-    render(siteHeaderElement, new ProfileComponent(movies), RenderPosition.BEFOREND);
     const filterController = new FilterController(siteMainElement, moviesModel, pageController);
     filterController.render();
   });
