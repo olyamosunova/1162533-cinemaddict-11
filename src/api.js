@@ -45,6 +45,10 @@ const API = class {
       .then(Comment.parseComment);
   }
 
+  deleteTask(id) {
+    return this._load({url: `comments/${id}`, method: Method.DELETE});
+  }
+
   updateMovie(id, data) {
     return this._load({
       url: `movies/${id}`,

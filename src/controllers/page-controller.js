@@ -160,7 +160,6 @@ export default class PageController {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, moviesModel);
         if (isSuccess) {
           movieController.render(moviesModel, MovieControllerMode.DEFAULT);
-          // this._updateMovies(this._showingMoviesCount);
         }
       });
   }

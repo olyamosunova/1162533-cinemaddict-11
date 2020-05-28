@@ -106,9 +106,13 @@ export default class MovieController {
           const commentElement = deleteButton.closest(`.film-details__comment`);
 
           const deleteCommentId = commentElement.id;
-          const comments = this._film.comments.filter((comment) => comment.id !== deleteCommentId);
 
-          this._onDataChange(this, this._film, Object.assign(this._film, {comments}));
+          const newMovie = MovieModel.clone(film);
+
+          this._api.deleteTask(deleteCommentId)
+            .then(() => {
+              this._onDataChange(this, film, newMovie);
+            });
         });
 
         this._filmDetailsComponent.setSendCommentHandler((evt) => {
@@ -126,7 +130,6 @@ export default class MovieController {
             this._api.createComment(this._movieId, comment)
               .then((commentsData) => {
                 this._film.comments = commentsData;
-                newMovie.comments.concat(newComment);
 
                 this._onDataChange(this, film, newMovie);
               });
