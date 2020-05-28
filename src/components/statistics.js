@@ -175,7 +175,7 @@ const createFiltersInputMarkup = (activeFilter) => {
 const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
   const watchedMovies = getHistoryMovies(filmsForPeriod);
   const countMovies = watchedMovies.length;
-  const rank = getUserRank(movies)[0].rank;
+  const rank = movies.length !== 0 ? getUserRank(movies)[0].rank : ``;
   const duration = getTotalDurationStatistics(watchedMovies);
   const {hours, minutes} = duration;
   const genre = getTopGenre(getGenresAll(watchedMovies));

@@ -126,7 +126,9 @@ export default class PageController {
     }
 
     this._extraMovies = this._moviesModel.getTopRatedMovies();
-    this._renderExtraMovies(this._topRatedComponent, this._extraMovies);
+    if (this._extraMovies.length !== 0) {
+      this._renderExtraMovies(this._topRatedComponent, this._extraMovies);
+    }
   }
 
   _renderMostCommentedMovies() {
@@ -135,7 +137,9 @@ export default class PageController {
     }
 
     this._extraMovies = this._moviesModel.getMostCommentedMovies();
-    this._renderExtraMovies(this._mostCommentedComponent, this._extraMovies);
+    if (this._extraMovies.length !== 0) {
+      this._renderExtraMovies(this._mostCommentedComponent, this._extraMovies);
+    }
   }
 
   _renderExtraMovies(component, extraMovies) {
