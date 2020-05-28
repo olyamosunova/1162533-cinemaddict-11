@@ -10,6 +10,9 @@ export const Mode = {
   POPUP_OPENED: `popup-opened`,
 };
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+const MILLISECONDS_IN_MINUTE = 1000;
+
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, api) {
     this._container = container;
@@ -104,20 +107,30 @@ export default class MovieController {
 
           const deleteButton = evt.target;
           const commentElement = deleteButton.closest(`.film-details__comment`);
-
           const deleteCommentId = commentElement.id;
-
           const newMovie = MovieModel.clone(film);
 
           this._api.deleteTask(deleteCommentId)
             .then(() => {
+              evt.target.setAttribute(`disabled`, `true`);
+              evt.target.textContent = `Deleting…`;
+
               this._onDataChange(this, film, newMovie);
+            })
+            .catch(() => {
+              evt.target.removeAttribute(`disabled`);
+              this._shakeCommentBlock(evt.target.closest(`.film-details__comment`));
             });
         });
 
         this._filmDetailsComponent.setSendCommentHandler((evt) => {
+          evt.target.style.boxShadow = `none`;
+
           const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
           if (isCtrlAndEnter) {
+            const formElements = this._filmDetailsComponent.getElement().querySelector(`form`)
+              .querySelectorAll(`input, textarea, button`);
+
             const newComment = this._filmDetailsComponent.dataComment();
             const comment = new CommentModel(newComment);
 
@@ -131,7 +144,14 @@ export default class MovieController {
               .then((commentsData) => {
                 this._film.comments = commentsData;
 
+                this._disableFields(formElements);
+
                 this._onDataChange(this, film, newMovie);
+              })
+              .catch(() => {
+                this._notDisableFields(formElements);
+                this.shake();
+                this.addErrorStyle();
               });
           }
         });
@@ -184,5 +204,37 @@ export default class MovieController {
     if (isEscCode) {
       this._closePopupElement();
     }
+  }
+
+  shake() {
+    this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS_IN_MINUTE}s`;
+
+    setTimeout(() => {
+      this._filmDetailsComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _shakeCommentBlock(commentBlock) {
+    commentBlock.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS_IN_MINUTE}s`;
+
+    setTimeout(() => {
+      commentBlock.style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  addErrorStyle() {
+    this._filmDetailsComponent.getElement().querySelector(`textarea`).style.boxShadow = `0 0 10px 2px red`;
+  }
+
+  _disableFields(elements) {
+    elements.forEach((element) => {
+      element.setAttribute(`disabled`, `true`);
+    });
+  }
+
+  _notDisableFields(elements) {
+    elements.forEach((element) => {
+      element.removeAttribute(`disabled`);
+    });
   }
 }

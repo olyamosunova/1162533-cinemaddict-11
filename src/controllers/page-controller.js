@@ -161,6 +161,9 @@ export default class PageController {
         if (isSuccess) {
           movieController.render(moviesModel, MovieControllerMode.DEFAULT);
         }
+      })
+      .catch(() => {
+        movieController.shake();
       });
   }
 
