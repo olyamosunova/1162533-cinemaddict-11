@@ -13,6 +13,8 @@ const createFilmCardTemplate = (film) => {
   const {title, poster, description, comments, rating,
     year, duration, allGenres} = film;
 
+  const genres = allGenres.length !== 0 ? allGenres[0] : ``;
+
   const addedButton = createButtonMarkup(`Add to watchlist`, `add-to-watchlist`, !film.isAddWatchlist);
   const watchedButton = createButtonMarkup(`Mark as watched`, `mark-as-watched`, !film.isAlreadyWatched);
   const favoriteButton = createButtonMarkup(`Mark as favorite`, `favorite`, !film.isAddFavorites);
@@ -24,7 +26,7 @@ const createFilmCardTemplate = (film) => {
         <p class="film-card__info">
           <span class="film-card__year">${year}</span>
           <span class="film-card__duration">${duration}</span>
-          <span class="film-card__genre">${allGenres[0]}</span>
+          <span class="film-card__genre">${genres}</span>
         </p>
         <img src=${poster} alt="" class="film-card__poster">
         <p class="film-card__description">${description}</p>

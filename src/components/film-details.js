@@ -1,6 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import CommentsComponent from "./comments";
-import {formatCommentsDate} from "../utils/common";
 import {encode} from 'he';
 
 const createGenreMarkup = (genres) => {
@@ -12,9 +11,9 @@ const createGenreMarkup = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film, options) => {
-  const {title, poster, description, comments, rating, duration,
+  const {title, poster, description, rating, duration,
     isAddWatchlist, isAlreadyWatched, isAddFavorites, originTitle, director, writers,
-    actors, releaseDate, country, age, allGenres} = film;
+    actors, releaseDate, country, age, allGenres, comments} = film;
 
   const genreMarkup = createGenreMarkup(allGenres);
   const commentsComponent = new CommentsComponent(comments, options).getTemplate();
@@ -198,19 +197,19 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   dataComment() {
-    const message = encode(this._element.querySelector(`.film-details__comment-input`).value);
+    const comment = encode(this._element.querySelector(`.film-details__comment-input`).value);
     const emotion = this._nameEmoji ? this._nameEmoji : ``;
 
-    if (!emotion || !message) {
+    if (!emotion || !comment) {
       return null;
     }
 
-    const date = formatCommentsDate(new Date());
+    const date = new Date();
     const id = String(new Date() + Math.random());
     const author = `user`;
 
     return {
-      message,
+      comment,
       emotion,
       date,
       id,

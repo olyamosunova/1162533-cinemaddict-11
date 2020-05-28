@@ -1,12 +1,12 @@
 import {EMOTIONS} from "../const";
 import AbstractSmartComponent from "./abstract-smart-component";
-import {encode} from 'he';
+import {formatCommentsDate} from "../utils/common";
 
 const createCommentMarkup = (comments) => {
-  return comments.map((comment) => {
-    const {id, emotion, date, author, message: notSanitizedMessage} = comment;
+  return comments.map((commentItem) => {
+    const {id, author, emotion, text, date} = commentItem;
 
-    const message = encode(notSanitizedMessage);
+    const dateComment = formatCommentsDate(new Date(date));
 
     return (
       `<li class="film-details__comment" id="${id}">
@@ -14,10 +14,10 @@ const createCommentMarkup = (comments) => {
                   <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
                 </span>
                 <div>
-                  <p class="film-details__comment-text">${message}</p>
+                  <p class="film-details__comment-text">${text}</p>
                   <p class="film-details__comment-info">
                     <span class="film-details__comment-author">${author}</span>
-                    <span class="film-details__comment-day">${date}</span>
+                    <span class="film-details__comment-day">${dateComment}</span>
                     <button class="film-details__comment-delete">Delete</button>
                   </p>
                 </div>
@@ -40,8 +40,8 @@ const createEmojiMarkup = (isChecked, nameEmoji) => {
 const createCommentsTemplate = (comments, options) => {
   const {isEmojiShowing, nameEmoji, commentText} = options;
 
-  const commentsCount = comments.length;
-  const commentMarkup = createCommentMarkup(comments);
+  const commentsCount = comments ? comments.length : ``;
+  const commentMarkup = commentsCount ? createCommentMarkup(comments) : ``;
   const emotionMarkup = createEmojiMarkup(isEmojiShowing, nameEmoji);
 
   return (
@@ -81,7 +81,6 @@ const createCommentsTemplate = (comments, options) => {
 export default class Comments extends AbstractSmartComponent {
   constructor(comments, options) {
     super();
-
     this._comments = comments;
     this._options = options;
   }
