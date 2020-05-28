@@ -7,11 +7,11 @@ import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
 import ProfileComponent from "../components/profile";
 
-const EXTRA_CARD_COUNT = 2;
 const SHOWING_MOVIES_COUNT_ON_START = 5;
 const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
 
 const renderMovies = (filmsListElement, films, onDataChange, onViewChange, api) => {
+  // console.log(films);
   return films.map((film) => {
     const movieController = new MovieController(filmsListElement, onDataChange, onViewChange, api);
 
@@ -146,7 +146,7 @@ export default class PageController {
     render(this._container.getElement(), component, RenderPosition.BEFOREND);
     const extraMoviesContainer = component.getElement().querySelector(`.films-list__container`);
 
-    const newMovies = renderMovies(extraMoviesContainer, extraMovies.slice(0, EXTRA_CARD_COUNT), this._onDataChange, this._onViewChange, this._api);
+    const newMovies = renderMovies(extraMoviesContainer, extraMovies, this._onDataChange, this._onViewChange, this._api);
     this._showedFilmControllers = this._showedFilmControllers.concat(newMovies);
   }
 

@@ -10,7 +10,7 @@ import {RenderPosition} from "./const";
 import {render, remove} from "./utils/render";
 import SortFilmsComponent from "./components/sort-films";
 
-const AUTHORIZATION = `Basic n8vjdegwrgwrdrsgegcbFye`;
+const AUTHORIZATION = `Basic n834tgreGRGye`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
 const siteMainElement = document.querySelector(`.main`);

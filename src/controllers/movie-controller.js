@@ -28,18 +28,16 @@ export default class MovieController {
   }
 
   render(film, mode) {
-    this._film = film;
-    this._movieId = this._film.id;
     this._mode = mode;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._api.getComments(this._film.id)
+    this._api.getComments(film.id)
       .then((comments) => {
-        this._film.comments = comments;
+        film.comments = comments;
 
         this._filmCardComponent = new FilmCardComponent(film);
-        this._filmDetailsComponent = new FilmDetailsComponent(this._film);
+        this._filmDetailsComponent = new FilmDetailsComponent(film);
 
         this._filmCardComponent.setPosterClickHandler(() => {
           this._openPopupElement();
@@ -140,9 +138,9 @@ export default class MovieController {
 
             const newMovie = MovieModel.clone(film);
 
-            this._api.createComment(this._movieId, comment)
+            this._api.createComment(film.id, comment)
               .then((commentsData) => {
-                this._film.comments = commentsData;
+                film.comments = commentsData;
 
                 this._disableFields(formElements);
 
