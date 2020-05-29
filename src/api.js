@@ -1,5 +1,4 @@
 import Movie from "./models/movie";
-import Comment from "./models/comment.js";
 
 const Method = {
   GET: `GET`,
@@ -25,27 +24,21 @@ const API = class {
   getMovies() {
     return this._load({url: `movies`})
       .then((response) => response.json())
+      .then((movies) => Promise.all(movies.map((movie) => this._getComments(movie))))
       .then(Movie.parseMovies);
-  }
-
-  getComments(movieId) {
-    return this._load({url: `comments/${movieId}`})
-      .then((response) => response.json())
-      .then(Comment.parseComments);
   }
 
   createComment(movieId, comment) {
     return this._load({
       url: `comments/${movieId}`,
       method: Method.POST,
-      body: JSON.stringify(comment.toRAW()),
+      body: JSON.stringify(comment),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then((response) => response.json())
-      .then(Comment.parseComment);
+      .then((response) => response.json());
   }
 
-  deleteTask(id) {
+  deleteComment(id) {
     return this._load({url: `comments/${id}`, method: Method.DELETE});
   }
 
@@ -57,7 +50,16 @@ const API = class {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
+      .then((movie) => this._getComments(movie))
       .then(Movie.parseMovie);
+  }
+
+  _getComments(movie) {
+    return this._load({
+      url: `comments/${movie.id}`
+    })
+      .then((response) => response.json())
+      .then((commentsList) => Object.assign({}, movie, {comments: commentsList}));
   }
 
   _load({url, method = `GET`, body = null, headers = new Headers()}) {

@@ -11,7 +11,6 @@ const SHOWING_MOVIES_COUNT_ON_START = 5;
 const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
 
 const renderMovies = (filmsListElement, films, onDataChange, onViewChange, api) => {
-  // console.log(films);
   return films.map((film) => {
     const movieController = new MovieController(filmsListElement, onDataChange, onViewChange, api);
 
