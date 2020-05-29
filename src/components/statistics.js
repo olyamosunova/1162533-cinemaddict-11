@@ -227,8 +227,6 @@ export default class Statistics extends AbstractSmartComponent {
       .findIndex((filter) => filter.name === `all-time`)];
 
     this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
-
-    this._chart = null;
   }
 
   getTemplate() {

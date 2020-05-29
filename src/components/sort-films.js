@@ -1,9 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 
-// Сортировка работает в одном направлении — от максимального к минимальному:
-//  при сортировке по дате выхода в начале списка будут самые новые фильмы,
-//  при сортировке по рейтингу — с самым высоким рейтингом.
-
 export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
