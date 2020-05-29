@@ -129,7 +129,7 @@ export default class MovieController {
             const formElements = this._filmDetailsComponent.getElement().querySelector(`form`)
               .querySelectorAll(`input, textarea, button`);
 
-            const newComment = this._filmDetailsComponent.dataComment();
+            const newComment = this._filmDetailsComponent.getDataComment();
             const comment = new CommentModel(newComment);
 
             if (!comment) {
@@ -147,9 +147,9 @@ export default class MovieController {
                 this._onDataChange(this, film, newMovie);
               })
               .catch(() => {
-                this._notDisableFields(formElements);
+                this._enableFields(formElements);
                 this.shake();
-                this.addErrorStyle();
+                this._addErrorStyle();
               });
           }
         });
@@ -179,6 +179,14 @@ export default class MovieController {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
+  shake() {
+    this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS_IN_MINUTE}s`;
+
+    setTimeout(() => {
+      this._filmDetailsComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
   _closePopupElement() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     remove(this._filmDetailsComponent);
@@ -204,14 +212,6 @@ export default class MovieController {
     }
   }
 
-  shake() {
-    this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS_IN_MINUTE}s`;
-
-    setTimeout(() => {
-      this._filmDetailsComponent.getElement().style.animation = ``;
-    }, SHAKE_ANIMATION_TIMEOUT);
-  }
-
   _shakeCommentBlock(commentBlock) {
     commentBlock.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS_IN_MINUTE}s`;
 
@@ -220,7 +220,7 @@ export default class MovieController {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
-  addErrorStyle() {
+  _addErrorStyle() {
     this._filmDetailsComponent.getElement().querySelector(`textarea`).style.boxShadow = `0 0 10px 2px red`;
   }
 
@@ -230,7 +230,7 @@ export default class MovieController {
     });
   }
 
-  _notDisableFields(elements) {
+  _enableFields(elements) {
     elements.forEach((element) => {
       element.removeAttribute(`disabled`);
     });
