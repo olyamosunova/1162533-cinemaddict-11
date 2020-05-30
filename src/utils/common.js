@@ -1,7 +1,7 @@
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 import {TimeToken, RANK} from "../const";
-import {getHistoryMovies} from "./filter";
+import {getMoviesByProperty} from "./filter";
 momentDurationFormatSetup(moment);
 
 const formatMovieDuration = (duration) => {
@@ -17,7 +17,7 @@ const formatCommentsDate = (date) => {
 };
 
 const getUserRank = (movies) => {
-  const countFilms = getHistoryMovies(movies).length;
+  const countFilms = getMoviesByProperty(movies, `isAlreadyWatched`).length;
   const ranks = Object.values(RANK);
   const userRank = ranks.filter(({minCount, maxCount, rank}) => (countFilms >= minCount && countFilms <= maxCount) ? rank : ``);
 

@@ -1,7 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getHistoryMovies} from "../utils/filter";
+import {getMoviesByProperty} from "../utils/filter";
 import {getUserRank} from "../utils/common";
 
 const SECOND = 60;
@@ -173,7 +173,7 @@ const createFiltersInputMarkup = (activeFilter) => {
 };
 
 const createStatisticsTemplate = (movies, filmsForPeriod, activeFilter) => {
-  const watchedMovies = getHistoryMovies(filmsForPeriod);
+  const watchedMovies = getMoviesByProperty(filmsForPeriod, `isAlreadyWatched`);
   const countMovies = watchedMovies.length;
   const rank = movies.length !== 0 ? getUserRank(movies)[0].rank : ``;
   const duration = getTotalDurationStatistics(watchedMovies);
@@ -226,7 +226,7 @@ export default class Statistics extends AbstractSmartComponent {
     this._activeFilter = FILTERS_FOR_STATISTICS[FILTERS_FOR_STATISTICS
       .findIndex((filter) => filter.name === `all-time`)];
 
-    this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
+    this._films = getMoviesForPeriod(getMoviesByProperty(this._movies, `isAlreadyWatched`), this._activeFilter.period);
   }
 
   getTemplate() {
@@ -274,7 +274,7 @@ export default class Statistics extends AbstractSmartComponent {
           .findIndex((filter) => filter.name === statisticsFilterName);
         this._activeFilter = FILTERS_FOR_STATISTICS[index];
 
-        this._films = getMoviesForPeriod(getHistoryMovies(this._movies), this._activeFilter.period);
+        this._films = getMoviesForPeriod(getMoviesByProperty(this._movies, `isAlreadyWatched`), this._activeFilter.period);
         this.rerender();
       });
   }

@@ -48,52 +48,27 @@ export default class MovieController {
     });
 
     this._filmCardComponent.setAddWatchButtonClickHandler((evt) => {
-      evt.preventDefault();
-
-      const newMovie = MovieModel.clone(film);
-      newMovie.isAddWatchlist = !newMovie.isAddWatchlist;
-
-      this._onDataChange(this, film, newMovie);
+      this._changeFilmControls(evt, film, `isAddWatchlist`);
     });
 
     this._filmCardComponent.setWatchedButtonClickHandler((evt) => {
-      evt.preventDefault();
-      const newMovie = MovieModel.clone(film);
-      newMovie.isAlreadyWatched = !newMovie.isAlreadyWatched;
-      newMovie.watchingDate = newMovie.watchingDate ? null : new Date();
-
-      this._onDataChange(this, film, newMovie);
+      this._changeFilmControls(evt, film, `isAlreadyWatched`);
     });
 
     this._filmCardComponent.setFavoritesButtonClickHandler((evt) => {
-      evt.preventDefault();
-
-      const newMovie = MovieModel.clone(film);
-      newMovie.isAddFavorites = !newMovie.isAddFavorites;
-
-      this._onDataChange(this, film, newMovie);
+      this._changeFilmControls(evt, film, `isAddFavorites`);
     });
 
-    this._filmDetailsComponent.setAddWatchButtonClickHandler(() => {
-      const newMovie = MovieModel.clone(film);
-      newMovie.isAddWatchlist = !newMovie.isAddWatchlist;
-
-      this._onDataChange(this, film, newMovie);
+    this._filmDetailsComponent.setAddWatchButtonClickHandler((evt) => {
+      this._changeFilmControls(evt, film, `isAddWatchlist`);
     });
 
-    this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
-      const newMovie = MovieModel.clone(film);
-      newMovie.isAlreadyWatched = !newMovie.isAlreadyWatched;
-      newMovie.watchingDate = newMovie.watchingDate ? null : new Date();
-
-      this._onDataChange(this, film, newMovie);
+    this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
+      this._changeFilmControls(evt, film, `isAlreadyWatched`);
     });
 
-    this._filmDetailsComponent.setFavoritesButtonClickHandler(() => {
-      const newMovie = MovieModel.clone(film);
-      newMovie.isAddFavorites = !newMovie.isAddFavorites;
-
-      this._onDataChange(this, film, newMovie);
+    this._filmDetailsComponent.setFavoritesButtonClickHandler((evt) => {
+      this._changeFilmControls(evt, film, `isAddFavorites`);
     });
 
     this._filmDetailsComponent.setDeleteCommentButtonClickHandler((evt) => {
@@ -200,6 +175,19 @@ export default class MovieController {
     if (isEscCode) {
       this._closePopupElement();
     }
+  }
+
+  _changeFilmControls(evt, film, property) {
+    evt.preventDefault();
+
+    const newMovie = MovieModel.clone(film);
+    newMovie[property] = !newMovie[property];
+
+    if (property === `isAlreadyWatched`) {
+      newMovie[`watchingDate`] = newMovie[`watchingDate`] ? null : new Date();
+    }
+
+    this._onDataChange(this, film, newMovie);
   }
 
   _shakeCommentBlock(commentBlock) {
