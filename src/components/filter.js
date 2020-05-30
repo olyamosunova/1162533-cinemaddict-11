@@ -12,7 +12,7 @@ const createFilterMarkup = (filter, isChecked) => {
 };
 
 const createFilterTemplate = (filters) => {
-  const filterMarkup = filters.map((it) => createFilterMarkup(it, it.checked)).join(`\n`);
+  const filterMarkup = filters.map((filter) => createFilterMarkup(filter, filter.checked)).join(`\n`);
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -44,7 +44,7 @@ export default class Filter extends AbstractComponent {
 
       const filterControlElements = this.getElement().querySelectorAll(`.main-navigation__item`);
 
-      filterControlElements.forEach((item) => item.classList.remove(`main-navigation__item--active`));
+      filterControlElements.forEach((filterControl) => filterControl.classList.remove(`main-navigation__item--active`));
 
       const filterName = evt.target.dataset.filterName;
 
