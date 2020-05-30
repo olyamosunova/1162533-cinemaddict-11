@@ -6,6 +6,7 @@ import FilmsContainer from "../components/films-container";
 import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
 import ProfileComponent from "../components/profile";
+import NoFilmsComponent from "../components/no-films";
 
 const SHOWING_MOVIES_COUNT_ON_START = 5;
 const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
@@ -54,6 +55,8 @@ export default class PageController {
     this._topRatedComponent = new ExtraFilmsComponent(`Top rated`);
     this._mostCommentedComponent = new ExtraFilmsComponent(`Most Commented`);
     this._siteHeaderElement = document.querySelector(`.header`);
+    this._noFilmsComponent = new NoFilmsComponent();
+    this._filmListElement = this._container.getElement().querySelector(`.films-list`);
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -80,10 +83,8 @@ export default class PageController {
     const container = this._container.getElement();
     const movies = this._moviesModel.getMovies();
 
-    const filmListElement = container.querySelector(`.films-list`);
-
     render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
-    render(filmListElement, this._filmsContainerComponent, RenderPosition.BEFOREND);
+    render(this._filmListElement, this._filmsContainerComponent, RenderPosition.BEFOREND);
 
     this._profileComponent = new ProfileComponent(movies);
     render(this._siteHeaderElement, this._profileComponent, RenderPosition.BEFOREND);
@@ -178,6 +179,8 @@ export default class PageController {
           remove(this._profileComponent);
           this._profileComponent = new ProfileComponent(this._moviesModel.getMoviesAll());
           render(this._siteHeaderElement, this._profileComponent, RenderPosition.BEFOREND);
+
+          this._addNoFilmsTitle();
         }
       })
       .catch(() => {
@@ -216,7 +219,16 @@ export default class PageController {
     }
   }
 
+  _addNoFilmsTitle() {
+    remove(this._noFilmsComponent);
+    if (this._moviesModel.getMovies().length === 0) {
+      render(this._filmListElement.querySelector(`.films-list__container`), this._noFilmsComponent, RenderPosition.BEFOREND);
+    }
+  }
+
   _onFilterChange() {
+    this._addNoFilmsTitle();
+
     this._updateMovies(SHOWING_MOVIES_COUNT_ON_START);
     this._sortComponent.reset();
   }
