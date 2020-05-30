@@ -27,8 +27,8 @@ export default class MovieController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(film, mode) {
-    this._mode = mode;
+  render(film) {
+    this._film = film;
     const oldFilmCardComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
@@ -84,7 +84,7 @@ export default class MovieController {
           evt.target.setAttribute(`disabled`, `true`);
           evt.target.textContent = `Deleting…`;
 
-          this._onDataChange(this, film, newMovie);
+          this._onDataChange(this, film, newMovie, this._mode);
         })
         .catch(() => {
           evt.target.removeAttribute(`disabled`);
@@ -110,7 +110,7 @@ export default class MovieController {
 
             this._disableFields(formElements);
 
-            this._onDataChange(this, film, newMovie);
+            this._onDataChange(this, film, newMovie, this._mode);
           })
           .catch(() => {
             this._enableFields(formElements);
@@ -157,6 +157,9 @@ export default class MovieController {
     remove(this._filmDetailsComponent);
     this._filmDetailsComponent.reset();
     this._mode = Mode.DEFAULT;
+
+    const newMovie = MovieModel.clone(this._film);
+    this._onDataChange(this, this._film, newMovie, this._mode);
   }
 
   _openPopupElement() {
@@ -187,7 +190,7 @@ export default class MovieController {
       newMovie[`watchingDate`] = newMovie[`watchingDate`] ? null : new Date();
     }
 
-    this._onDataChange(this, film, newMovie);
+    this._onDataChange(this, film, newMovie, this._mode);
   }
 
   _shakeCommentBlock(commentBlock) {

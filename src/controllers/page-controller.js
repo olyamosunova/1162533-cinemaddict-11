@@ -6,7 +6,6 @@ import FilmsContainer from "../components/films-container";
 import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
 import ProfileComponent from "../components/profile";
-import NoFilmsComponent from "../components/no-films";
 
 const SHOWING_MOVIES_COUNT_ON_START = 5;
 const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
@@ -15,7 +14,7 @@ const renderMovies = (filmsListElement, films, onDataChange, onViewChange, api) 
   return films.map((film) => {
     const movieController = new MovieController(filmsListElement, onDataChange, onViewChange, api);
 
-    movieController.render(film, MovieControllerMode);
+    movieController.render(film);
 
     return movieController;
   });
@@ -55,7 +54,6 @@ export default class PageController {
     this._topRatedComponent = new ExtraFilmsComponent(`Top rated`);
     this._mostCommentedComponent = new ExtraFilmsComponent(`Most Commented`);
     this._siteHeaderElement = document.querySelector(`.header`);
-    this._noFilmsComponent = new NoFilmsComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -166,12 +164,16 @@ export default class PageController {
     this._rerenderExtraMovies();
   }
 
-  _onDataChange(movieController, oldData, newData) {
+  _onDataChange(movieController, oldData, newData, mode) {
     this._api.updateMovie(oldData.id, newData)
       .then((moviesModel) => {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, moviesModel);
         if (isSuccess) {
-          movieController.render(moviesModel, MovieControllerMode.DEFAULT);
+          movieController.render(moviesModel);
+
+          if (mode === MovieControllerMode.DEFAULT) {
+            this._updateMovies(this._showingMoviesCount);
+          }
 
           remove(this._profileComponent);
           this._profileComponent = new ProfileComponent(this._moviesModel.getMoviesAll());
@@ -215,13 +217,6 @@ export default class PageController {
   }
 
   _onFilterChange() {
-    const filmListElement = this._container.getElement().querySelector(`.films-list`);
-
-    remove(this._noFilmsComponent);
-    if (this._moviesModel.getMovies().length === 0) {
-      render(filmListElement, this._noFilmsComponent, RenderPosition.BEFOREND);
-    }
-
     this._updateMovies(SHOWING_MOVIES_COUNT_ON_START);
     this._sortComponent.reset();
   }
