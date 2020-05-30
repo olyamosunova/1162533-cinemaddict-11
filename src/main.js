@@ -8,7 +8,6 @@ import PageController from "./controllers/page-controller";
 import MoviesModel from "./models/movies";
 import {RenderPosition} from "./const";
 import {render, remove} from "./utils/render";
-import SortFilmsComponent from "./components/sort-films";
 
 const AUTHORIZATION = `Basic n834dfhdhrGRGye`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
@@ -21,9 +20,6 @@ const moviesModel = new MoviesModel();
 
 const filmsComponent = new FilmsComponent();
 render(siteMainElement, filmsComponent, RenderPosition.BEFOREND);
-
-const sortFilmsComponent = new SortFilmsComponent();
-render(filmsComponent.getElement(), sortFilmsComponent, RenderPosition.BEFOREBEGIN);
 
 const pageController = new PageController(filmsComponent, moviesModel, api);
 const filterController = new FilterController(siteMainElement, moviesModel, pageController);
@@ -38,7 +34,6 @@ render(siteFooterElement, filmsCountComponent, RenderPosition.BEFOREND);
 api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(movies);
-    remove(sortFilmsComponent);
     pageController.render(movies);
     remove(loadingComponent);
     remove(filmsCountComponent);

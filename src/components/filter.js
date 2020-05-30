@@ -42,7 +42,7 @@ export default class Filter extends AbstractComponent {
         return;
       }
 
-      const filterControlElements = this.getElement().querySelectorAll(`.main-navigation__item`);
+      const filterControlElements = this.getElement().querySelectorAll(`[data-filter-name]`);
 
       filterControlElements.forEach((filterControl) => filterControl.classList.remove(`main-navigation__item--active`));
 

@@ -70,10 +70,12 @@ export default class PageController {
 
   hide() {
     this._container.hide();
+    this._sortComponent.hide();
   }
 
   show() {
     this._container.show();
+    this._sortComponent.show();
   }
 
   render() {
