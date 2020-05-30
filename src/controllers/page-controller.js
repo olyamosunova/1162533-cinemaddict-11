@@ -6,6 +6,7 @@ import FilmsContainer from "../components/films-container";
 import MovieController, {Mode as MovieControllerMode} from "./movie-controller";
 import ExtraFilmsComponent from "../components/extra-films";
 import ProfileComponent from "../components/profile";
+import NoFilmsComponent from "../components/no-films";
 
 const SHOWING_MOVIES_COUNT_ON_START = 5;
 const SHOWING_MOVIES_COUNT_BY_BUTTON = 5;
@@ -54,6 +55,7 @@ export default class PageController {
     this._topRatedComponent = new ExtraFilmsComponent(`Top rated`);
     this._mostCommentedComponent = new ExtraFilmsComponent(`Most Commented`);
     this._siteHeaderElement = document.querySelector(`.header`);
+    this._noFilmsComponent = new NoFilmsComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -211,6 +213,13 @@ export default class PageController {
   }
 
   _onFilterChange() {
+    const filmListElement = this._container.getElement().querySelector(`.films-list`);
+
+    remove(this._noFilmsComponent);
+    if (this._moviesModel.getMovies().length === 0) {
+      render(filmListElement, this._noFilmsComponent, RenderPosition.BEFOREND);
+    }
+
     this._updateMovies(SHOWING_MOVIES_COUNT_ON_START);
     this._sortComponent.reset();
   }

@@ -11,6 +11,7 @@ export const Mode = {
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 const MILLISECONDS_IN_MINUTE = 1000;
+const ESC_KEY_CODE = 27;
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, api) {
@@ -194,7 +195,7 @@ export default class MovieController {
   }
 
   _onEscKeyDown(evt) {
-    const isEscCode = evt.keyCode === 27;
+    const isEscCode = evt.keyCode === ESC_KEY_CODE;
 
     if (isEscCode) {
       this._closePopupElement();
