@@ -1,4 +1,4 @@
-import Movie from "./models/movie";
+import Movie from "../models/movie";
 
 const Method = {
   GET: `GET`,
@@ -60,6 +60,16 @@ const API = class {
     })
       .then((response) => response.json())
       .then((commentsList) => Object.assign({}, movie, {comments: commentsList}));
+  }
+
+  sync(data) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json());
   }
 
   _load({url, method = `GET`, body = null, headers = new Headers()}) {
